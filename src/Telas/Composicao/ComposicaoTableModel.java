@@ -5,6 +5,7 @@ import java.util.List;
 
 import Entidades.Composicao;
 import Entidades.Locomotiva;
+import Entidades.Vagao;
 import Telas.Comum.AbstractTable;
 
 public class ComposicaoTableModel extends AbstractTable<Composicao>{

@@ -4,16 +4,23 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import com.jgoodies.forms.layout.CellConstraints;
 import com.jgoodies.forms.layout.FormLayout;
 
 import Entidades.Vagao;
 import Entidades.VeiculoFerroviario;
+
 import Repositorio.Factory;
 import Repositorio.FactoryLayout;
 import Repositorio.Controller;
 
+import Telas.Comum.PosicaoTela;
+
 public class AdicionarVagao extends JFrame{
+	
+	private PosicaoTela pTela;
 	
 	private VagaoTableModel modelo;
 	private Vagao vagao = null;
@@ -23,6 +30,7 @@ public class AdicionarVagao extends JFrame{
 	private JButton JBExcluir;
 	private JButton JBSalvar;
 	private JButton JBNovo;
+	private JButton JBCancelar;
 	
 	//declarando campos de texto
 	private JTextField JTBitola;
@@ -38,6 +46,8 @@ public class AdicionarVagao extends JFrame{
 	private JLabel JLTipo;
 	private JLabel JLSubtipo;
 	private JLabel JLProprietario;
+	private JLabel JLimg;
+	private JLabel JLlocomotiva;
 
 	//declarando as combobox
 	//bitola
@@ -53,6 +63,7 @@ public class AdicionarVagao extends JFrame{
 	private JComboBox<Vagao.Tipo> JCBTipo;
 	
 	//declarando seções da janela
+	JPanel Jhead;
 	JPanel Jbody;
 	JPanel Jfooter;
 	
@@ -86,6 +97,7 @@ public class AdicionarVagao extends JFrame{
 		JBExcluir.setVisible(false);
 		JBNovo.setVisible(false);
 		JBSalvar.setVisible(false);
+		JBCancelar.setVisible(false);
 		
 		//setando o titulo
 		this.setTitle(v.getIdentificacao());
@@ -153,86 +165,120 @@ public class AdicionarVagao extends JFrame{
 		//labels
 		JLTitulo = new JLabel("Cadastrar Vagão");
 		JLBitola = new JLabel("Bitola:");
-		JLComprimento = new JLabel("Comprimento:");
+		JLComprimento = new JLabel("Comprimento(m):");
 		JLProprietario = new JLabel("Proprietário:");
 		JLSubtipo = new JLabel("Subtipo:");
 		JLTipo = new JLabel("Tipo:");
+		JLlocomotiva = new JLabel("Vagão");
 		
 		//botões
 		JBExcluir = new JButton("Excluir");
 		JBNovo = new JButton("Novo");
 		JBSalvar = new JButton("Salvar");
+		JBCancelar = new JButton("Cancelar");
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocation(450, 300);
-		setResizable(false);
 		
+		Jhead();
 		Jbody();
 		Jfooter();	
 		
 		Container cp = getContentPane();
 		cp.setLayout(new BorderLayout());
+		cp.add(Jhead, BorderLayout.NORTH);
 		cp.add(Jbody, BorderLayout.CENTER);
 		cp.add(Jfooter, BorderLayout.SOUTH);
+		
+		cp.setSize(cp.getMinimumSize().width, cp.getMinimumSize().height);
+		pTela = new PosicaoTela();
+		setLocation(pTela.Width(cp.getWidth()), pTela.Height(cp.getHeight()));
+		setResizable(false);
+		
 		pack();
 		tela = new FactoryLayout();
 	}
 	
-	//conteudo do formulário
-	private void Jbody() { 
+	private void Jhead() {
 		FormLayout layouthead = new FormLayout(
-				"pref, 5dlu, 50dlu, 20dlu, min,pref, 5dlu, 50dlu, 5dlu, min", // colunas
-				"pref, 2dlu, pref, 2dlu, pref"); // linha
-		Jbody = new JPanel(layouthead);
+				"60dlu, pref, pref, 5dlu,pref ", // colunas
+				"5dlu, pref, 5dlu"); // linha
+		Jhead = new JPanel(layouthead);
+		Jhead.setBorder(new TitledBorder(" "));
+		CellConstraints cc = new CellConstraints();
+		JLimg    = new JLabel();
+		JLimg.setBounds(0,0,50,50);
+		ImageIcon imgIcon = new ImageIcon("res/vagao.png");
+		Image img = imgIcon.getImage().getScaledInstance(JLimg.getWidth(),JLimg.getHeight(), Image.SCALE_DEFAULT);
+		JLimg.setIcon(new ImageIcon(img));
+		Jhead.add(JLimg,cc.xy(2,2));
+		Font Font1 = new Font("Arial", Font.BOLD, 24);
+		JLlocomotiva.setFont(Font1);
+		Jhead.add(JLlocomotiva,cc.xy(5,2));	
+	}
+
+	//conteudo do formulário
+	private void Jbody() {
+		FormLayout layoutbody = new FormLayout(
+				"5dlu, pref, pref, 5dlu, 50dlu, 20dlu, min,pref, 5dlu, 50dlu, 5dlu, min", // colunas
+				"pref, 3dlu, pref, 3dlu, pref, pref, 3dlu, pref, 3dlu, pref"); // linha
+		//layoutbody.setRowGroups(new int[][] { { 1, 3, 5 } });
+		Jbody = new JPanel(layoutbody);
+		Jbody.setBorder(new TitledBorder(" "));
 		CellConstraints cc = new CellConstraints();
 		//proprietario
-		Jbody.add(JLProprietario, cc.xy(1, 1));
+		Jbody.add(JLProprietario, cc.xy(3, 1));
 		JTProprietario= new JTextField();
-		Jbody.add(JTProprietario, cc.xy(3, 1));
-		
-		//comprimento
-		Jbody.add(JLComprimento, cc.xy(5, 1));
-		JTComprimento = new JTextField();
-		Jbody.add(JTComprimento, cc.xy(8,1));
-		
-		//Tipo
-		Jbody.add(JLTipo, cc.xy(1, 3));
-		Jbody.add(JCBTipo, cc.xy(3,3));
-		
-		//Subtipo
-		Jbody.add(JLSubtipo, cc.xy(5, 3));
-		Jbody.add(JCBSubTipo, cc.xy(8,3));
+		Jbody.add(JTProprietario, cc.xy(5, 1));
 		
 		//bitola
-		Jbody.add(JLBitola, cc.xy(1, 5));
-		Jbody.add(JCBBitola, cc.xy(3, 5));
+		Jbody.add(JLBitola, cc.xy(7, 1)); 
+		Jbody.add(JCBBitola, cc.xy(10, 1));
+		
+		//comprimento
+		Jbody.add(JLComprimento, cc.xy(3, 3));
+		JTComprimento = new JTextField();
+		Jbody.add(JTComprimento, cc.xyw(5,3,6));
+		
+		//Subtipo
+		Jbody.add(JLSubtipo, cc.xy(3, 5));
+		Jbody.add(JCBSubTipo, cc.xy(5,5));
+		
+		//Tipo
+		Jbody.add(JLTipo, cc.xy(3, 8)); 
+		Jbody.add(JCBTipo, cc.xy(5, 8));
 	}
 	
 	//botoes do formulario
-	private void Jfooter() { 
+	private void Jfooter() {
 		FormLayout layoutfooter = new FormLayout(
-				"pref, 5dlu, 42dlu, 5dlu, min,", // colunas
+				"5dlu, pref,5dlu, pref, 5dlu,pref, 5dlu,pref, min,pref", // colunas
 				"pref, 5dlu, pref, 5dlu, pref"); // linha
+		//layoutbody.setRowGroups(new int[][] { { 1, 3, 5 } });
 		Jfooter = new JPanel(layoutfooter);
+		Jfooter.setBorder(new TitledBorder(" "));
 		CellConstraints cc = new CellConstraints();
-		
 		//botão salvar
 		JBSalvar = new JButton("Salvar");
-		Jfooter.add(JBSalvar, cc.xy(1,3));
+		Jfooter.add(JBSalvar, cc.xy(6,3));
 		
 		//botão novo
 		JBNovo = new JButton("Novo");
-		Jfooter.add(JBNovo,cc.xy(3, 3 ));
+		Jfooter.add(JBNovo,cc.xy(8, 3 ));
 		
 		//botão excluir
 		JBExcluir = new JButton("Excluir");
-		JBExcluir.setVisible(false); //apenas para o alterar
-		Jfooter.add(JBExcluir,cc.xy(5,3));
+		JBExcluir.setEnabled(false);
+		Jfooter.add(JBExcluir,cc.xy(4,3));
+		
+		//botão cancelar
+		JBCancelar = new JButton("Cancelar");
+		Jfooter.add(JBCancelar,cc.xy(2, 3));
 		
 		//ações dos botões
 		JBSalvar.addActionListener(jbSalvarActLt);
 		JBNovo.addActionListener(jbNovoActLt);
 		JBExcluir.addActionListener(jbExCluirActLt);
+		JBCancelar.addActionListener(jbCancelarActLt);
 	}
 	
 	//ação botão Salvar
@@ -331,6 +377,13 @@ public class AdicionarVagao extends JFrame{
 			}
 		}
 	};
+	
+	//ação botão Cancelar
+	ActionListener jbCancelarActLt = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			dispose();
+		}
+	}; 
 	
 	public JPanel GetPanel() {
 		// TODO Auto-generated method stub

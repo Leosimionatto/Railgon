@@ -109,7 +109,7 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 			try {
 				int linhaSelecionada = -1;
 		        linhaSelecionada = tabela.getSelectedRow();
-			        if (linhaSelecionada > 0) {
+			        if (linhaSelecionada >= 0) {
 			            //tela.openAtualizarComposicao(modelo, linhaSelecionada, codigoComposicao);
 			        }
 			} catch (Exception e) {
@@ -122,12 +122,12 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 			try {
 				int linhaSelecionada = -1;
 		        linhaSelecionada = tabela.getSelectedRow();
-			        if (linhaSelecionada > 0) {
+			        if (linhaSelecionada >= 0) {
 			        	int confirm = tela.openConfirm("Tem certeza que deseja excluir a composição?");
 						if(confirm == 0){
 							try {
 								c.connect();
-								//c.removeId(codigoComposicao);
+								//c.remove(codigoComposicao);
 								tela.openAlertInfo("", "Excluído com sucesso.");
 								modelo.removeComposicao(tabela.getSelectedRow());
 							} catch (Exception ex) {

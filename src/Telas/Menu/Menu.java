@@ -9,6 +9,7 @@ import Repositorio.Controller;
 import Repositorio.Factory;
 import Repositorio.FactoryLayout;
 import Telas.Composicao.ListarComposicao;
+import Telas.Composicao.Relatorio;
 import Telas.Locomotiva.ListarLocomotiva;
 import Telas.Outras.Sobre;
 import Telas.Vagao.ListarVagao;
@@ -20,7 +21,7 @@ public class Menu extends JFrame {
 	// Quando passamos nulo, na hora em que deverÃ­amos passar as novas informaÃ§Ãµes de item, ele coloca uma linha separadora
 	private static String sVagao[] = {"Novo Vagão", "res/newVagao.gif", null, null, "Vagões", "res/listaVagao.gif", null};
 	private static String sLocomotiva[] = {"Nova Locomotiva", "res/newLocomotiva.gif", null, null, "Locomotivas", "res/listaLocomotiva.gif", null};
-	private static String sComposicao[] = {"Nova Composição", "res/newComposicao.gif", null, null, "Composições", "res/listaComposicao.gif", null};
+	private static String sComposicao[] = {"Nova Composição", "res/newComposicao.gif", null, "Composições", "res/listaComposicao.gif", null, null, "Gerar Relatório", null, null};
 	private static String sSistema[] = {"Sobre", "res/sobre.gif", null, null, "Sair", "res/listaComposicao.gif", null};
 	
 	FactoryLayout telas = new FactoryLayout();
@@ -29,6 +30,7 @@ public class Menu extends JFrame {
 	private ListarLocomotiva panelListarLocomotiva = telas.openListarLocomotiva();
 	private ListarComposicao panelListarComposicao = telas.openListarComposicao();
 	private Sobre panelSobre = telas.openSobre();
+	private Relatorio relatorio = new Relatorio();
 	
 	public Menu() {
 		
@@ -93,6 +95,9 @@ public class Menu extends JFrame {
 			case "Composições":
 				getContentPane().removeAll();
 				panelBody = panelListarComposicao.GetPanel();	
+			break;
+			case "Gerar Relatório":
+				relatorio.GerarRelatorio();
 			break;
 			case "Sobre":
 				getContentPane().removeAll();

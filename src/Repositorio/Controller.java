@@ -59,7 +59,7 @@ public class Controller {
 			pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR O VAGÃO: " + v.getIdentificacao().toString() + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL CRIAR O VAGÃƒO: " + v.getIdentificacao().toString() + e.getMessage());
 		}
 	}
 
@@ -78,7 +78,7 @@ public class Controller {
 			pstmt.setDouble(5, l.getPesoMax());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR A LOCOMOTIVA " + l.getClasse() + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL CRIAR A LOCOMOTIVA " + l.getClasse() + e.getMessage());
 		}
 
 	}
@@ -129,7 +129,7 @@ public class Controller {
 				pstmt.executeUpdate();
 			}			
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR A COMPOSICAO: " + c.getCodigo() + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL CRIAR A COMPOSICAO: " + c.getCodigo() + e.getMessage());
 		}
 	}
 	
@@ -152,7 +152,7 @@ public class Controller {
 			return vagoes;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar os vagoes do banco! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar os vagoes do banco! " + e.getMessage());
 		}
 	}
 	
@@ -175,12 +175,12 @@ public class Controller {
 			return locomotivas;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar os vagoes do banco! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar os vagoes do banco! " + e.getMessage());
 		}
 	}	
 	
-	/** Responsavel por exibir todas as composições
-	 * @return Retorna um Arraylist com todas as composições
+	/** Responsavel por exibir todas as composiÃ§Ãµes
+	 * @return Retorna um Arraylist com todas as composiÃ§Ãµes
 	 */
 	public ArrayList<Composicao> selectComposicoes(){
 		try{
@@ -223,7 +223,7 @@ public class Controller {
 			return vagoes;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar os vagoes da Composição! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar os vagoes da ComposiÃ§Ã£o! " + e.getMessage());
 		}
 	}
 	
@@ -246,7 +246,7 @@ public class Controller {
 			return locomotiva;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar as Locomotivas da Composicao! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar as Locomotivas da Composicao! " + e.getMessage());
 		}
 	}
 	
@@ -271,7 +271,7 @@ public class Controller {
 			return 	v;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar os vagoes do banco! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar os vagoes do banco! " + e.getMessage());
 		}		
 	}
 
@@ -296,7 +296,7 @@ public class Controller {
 			return l;
 		}
 		catch(Exception e){
-			throw new RuntimeException("Não foi possivel resgatar os vagoes do banco! " + e.getMessage());
+			throw new RuntimeException("NÃ£o foi possivel resgatar os vagoes do banco! " + e.getMessage());
 		}		
 	}
 
@@ -364,7 +364,7 @@ public class Controller {
 			}
 			
 			if(c == null){
-				throw new RuntimeException("A Composição não existe!");
+				throw new RuntimeException("A ComposiÃ§Ã£o nÃ£o existe!");
 			}
 			
 			return c;
@@ -376,7 +376,7 @@ public class Controller {
 	
 	/** Responsavel por atualizar os dados do Vagao
 	 * @param v
-	 * @return 1 SE EXECUTOU COM SUCESSO E 0 SE NÃO EXECUTOU
+	 * @return 1 SE EXECUTOU COM SUCESSO E 0 SE NÃƒO EXECUTOU
 	 */
 	public int update(Vagao v){
 		try {
@@ -391,13 +391,13 @@ public class Controller {
 			return pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL ATUALIZAR O VAGÃO\n" + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL ATUALIZAR O VAGÃƒO\n" + e.getMessage());
 		}
 	}
 
 	/** Responsavel por atualizar os dados do vagao
 	 * @param l
-	 * @return 1 SE EXECUTOU COM SUCESSO E 0 SE NÃO EXECUTOU
+	 * @return 1 SE EXECUTOU COM SUCESSO E 0 SE NÃƒO EXECUTOU
 	 */
 	public int update(Locomotiva l){
 		try {
@@ -415,13 +415,13 @@ public class Controller {
 			return pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL ATUALIZAR A LOCOMOTIVA!\n" + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL ATUALIZAR A LOCOMOTIVA!\n" + e.getMessage());
 		}
 	}
 	
-	/** Responsavel por atualizar uma composição, apagando, atualizando e inserindo os elementos na composição 
+	/** Responsavel por atualizar uma composiÃ§Ã£o, apagando, atualizando e inserindo os elementos na composiÃ§Ã£o 
 	 * @param c
-	 * @return Retorna 1 se criou a composição e 2 se atualizou
+	 * @return Retorna 1 se criou a composiÃ§Ã£o e 2 se atualizou
 	 */
 	public int update(Composicao c){
 		String sqlUpdateComposicao  = "UPDATE COMPOSICAO SET DESCRICAO = ?, BITOLA = ?, QTDVAGAO = ?, QTDLOCOMOTIVA = ?, COMPRIMENTO = ? WHERE ID = ? ";
@@ -455,7 +455,7 @@ public class Controller {
 			ALlocomotiva     = c.getLocomotivas();
 			ALvagao          = c.getVagoes();
 			
-			// A lista de locomotivas do banco é diferente da composicao que foi passada
+			// A lista de locomotivas do banco Ã© diferente da composicao que foi passada
 			if(!ALlocomotivaAux.equals(ALlocomotiva)){
 				
 				//atualiza os dados da composicao
@@ -483,7 +483,7 @@ public class Controller {
 				
 				//percorre as locomotivas que foram passadas
 				for(int i =0; i < ALlocomotiva.size();i++){
-					//se as locomotivas que foram passadas NÃO estam no banco, insere no banco
+					//se as locomotivas que foram passadas NÃƒO estam no banco, insere no banco
 					if(!ALlocomotivaAux.contains(ALlocomotiva.get(i))){
 						
 						//insere locomotiva
@@ -504,15 +504,15 @@ public class Controller {
 				}
 			}
 			
-			// A lista de vagões do banco é diferente da composicao que foi passada
+			// A lista de vagÃµes do banco Ã© diferente da composicao que foi passada
 			if(!ALvagaoAux.equals(ALvagao)){
 				
-				//percorre os vagões que estao no banco
+				//percorre os vagÃµes que estao no banco
 				for(int i=0; i < ALvagaoAux.size(); i++){
-					//se a lista que foi passada NAO tem um vagão do banco, exclui do banco
+					//se a lista que foi passada NAO tem um vagÃ£o do banco, exclui do banco
 					if(!ALvagao.contains(ALvagaoAux.get(i))){
 						
-						//remover vagão
+						//remover vagÃ£o
 						pstmt = conn.prepareStatement(sqlDeleteVagao);
 						pstmt.setInt(1,c.getCodigo());
 						pstmt.setString(1,ALvagao.get(i).getIdentificacao());						
@@ -520,12 +520,12 @@ public class Controller {
 					}
 				}
 				
-				//percorre os vagões que foram passados
+				//percorre os vagÃµes que foram passados
 				for(int i =0; i < ALvagao.size();i++){
-					//se os vagões que foram passadas NÃO estam no banco, insere no banco
+					//se os vagÃµes que foram passadas NÃƒO estam no banco, insere no banco
 					if(!ALvagaoAux.contains(ALvagao.get(i))){
 						
-						//insere vagão
+						//insere vagÃ£o
 						pstmt = conn.prepareStatement(sqlInsertVagao);
 						pstmt.setInt(1,c.getCodigo());
 						pstmt.setString(2,ALvagao.get(i).getIdentificacao());
@@ -533,7 +533,7 @@ public class Controller {
 						pstmt.executeUpdate();
 					}else{
 						
-						//atualiza vagão
+						//atualiza vagÃ£o
 						pstmt = conn.prepareStatement(sqlUpdateVagao);
 						pstmt.setInt(1,ALvagao.get(i).getOrdemComposicao());
 						pstmt.setInt(2,c.getCodigo());
@@ -544,13 +544,13 @@ public class Controller {
 			}
 			return 2;
 		}catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL ATUALIZAR A COMPOSIÇÃO: " + c.getCodigo() + " " + e.getMessage());
+			throw new RuntimeException("NÃƒO FOI POSSIVEL ATUALIZAR A COMPOSIÃ‡ÃƒO: " + c.getCodigo() + " " + e.getMessage());
 		}
 	}
 	
-	/** Responsavel por remover o Vagão da base de dados
-	 * @param v Vagão a ser removido
-	 * @return 1 se removeu e 0 se não removeu
+	/** Responsavel por remover o VagÃ£o da base de dados
+	 * @param v VagÃ£o a ser removido
+	 * @return 1 se removeu e 0 se nÃ£o removeu
 	 */
 	public int remove(Vagao v){
 		try {		
@@ -562,13 +562,13 @@ public class Controller {
 			return pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER O VAGÃO: ELE ESTÁ EM UMA COMPOSIÇÃO!");
+			throw new RuntimeException("NÃƒO FOI POSSIVEL REMOVER O VAGÃƒO: ELE ESTÃ� EM UMA COMPOSIÃ‡ÃƒO!");
 		}
 	}
 	
 	/** Responsavel por remover a Locomotiva da base de dados
 	 * @param l Locomotiva a ser removida
-	 * @return 1 se removeu e 0 se não removeu
+	 * @return 1 se removeu e 0 se nÃ£o removeu
 	 */
 	public int remove(Locomotiva l){
 		try {		
@@ -580,13 +580,13 @@ public class Controller {
 			return pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÁ EM UMA COMPOSIÇÃO!");
+			throw new RuntimeException("NÃƒO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÃ� EM UMA COMPOSIÃ‡ÃƒO!");
 		}
 	}
 
-	/** Responsavel por remover a Composicao, mas não por apagar os seus componentes
+	/** Responsavel por remover a Composicao, mas nÃ£o por apagar os seus componentes
 	 * @param c Composicao
-	 * @return 1 se removeu e 0 se não removeu
+	 * @return 1 se removeu e 0 se nÃ£o removeu
 	 */
 	public int remove(Composicao c){
 		try {		
@@ -623,8 +623,12 @@ public class Controller {
 			throw new RuntimeException("ERRO AO APAGAR COMPOSICAO");
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÁ EM UMA COMPOSIÇÃO!");
+			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÃ� EM UMA COMPOSIÃ‡ÃƒO!");
 		}
+	}
+	
+	public int remove(int cod){
+		return this.remove(this.selectComposicao(cod));
 	}
 	
 	public void teste(Composicao c){

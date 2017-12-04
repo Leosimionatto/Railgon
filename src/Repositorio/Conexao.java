@@ -16,11 +16,11 @@ public class Conexao{
 	 */
 	private static Conexao instance = null;
 	
-	/** Guarda a conexÃ£o com o banco
+	/** Guarda a conexão com o banco
 	 */
 	private static Connection conn = null;
 	
-	/** Informa o local do banco de dados, nome e o parÃ¢metro para criar caso nao exista
+	/** Informa o local do banco de dados, nome e o parâmetro para criar caso nao exista
 	 */
 	private static final String PATH = "jdbc:derby:ferrovia;create=true";
 	
@@ -45,8 +45,8 @@ public class Conexao{
 		try{
 			conn = DriverManager.getConnection(PATH, USER, PASS);
 		}catch(Exception e){
-			layout.openAlertError("ERRO DE CONEXï¿½O", ("Erro ao carregar o Driver " + e.getMessage()));
-			throw new RuntimeException();
+			layout.openAlertError("ERRO DE CONEXÃO", ("Erro ao carregar o Driver " + e.getMessage()));
+			return;
 		}
 	}
 	
@@ -60,7 +60,7 @@ public class Conexao{
 			}
 			return instance;
 		}catch(Exception e){
-			layout.openAlertError("ERRO DE CONEXï¿½O", ("Erro ao pegar a instancia! " + e.getMessage()));
+			layout.openAlertError("ERRO DE CONEXÃO", ("Erro ao pegar a instancia! " + e.getMessage()));
 			throw new RuntimeException();
 		}		
 	}
@@ -70,7 +70,7 @@ public class Conexao{
 	 */
 	public Connection On(){
 		if(conn == null){
-			layout.openAlertError("ERRO DE CONEXï¿½O", ("Conexï¿½o nï¿½o realizada!"));
+			layout.openAlertError("ERRO DE CONEXÃO", ("Conexão não realizada!"));
 		}
 		return conn;
 	} 
@@ -79,13 +79,13 @@ public class Conexao{
 	 */
 	public void Off(){
 		try{
-			//encerra a conexÃ£o com o banco
+			//encerra a conexão com o banco
 			conn.close();
 			conn = null;
 			instance = null;
 		}catch(Exception e){
-			layout.openAlertError("ERRO DE CONEXï¿½O", ("Erro ao encerrar conexï¿½o" + e.getMessage()));
-			throw new RuntimeException();
+			layout.openAlertError("ERRO DE CONEXÃO", ("Erro ao encerrar conexão" + e.getMessage()));
+			return;
 		}
 	}
 	/** Responsavel por criar o banco na primeira execucao
@@ -120,7 +120,7 @@ public class Conexao{
 			
 			//prepara a query para ser executada
 			PreparedStatement pstmt = conn.prepareStatement(DMLBitola);
-			//troca os valores passados pelos pontos de interrogoaÃ§Ã£o, evitando SQLINJECT 
+			//troca os valores passados pelos pontos de interrogoação, evitando SQLINJECT 
 			pstmt.setString(1, "A");  pstmt.setDouble(2,  30.0); pstmt.setDouble(3, 1.0);
 			pstmt.setString(4, "B");  pstmt.setDouble(5,  47.0); pstmt.setDouble(6, 1.0);
 			pstmt.setString(7, "C");  pstmt.setDouble(8,  64.0); pstmt.setDouble(9, 1.0);
@@ -138,8 +138,8 @@ public class Conexao{
 			//insere as bitolas no banco e retorna o numero de linhas afetadas
 			pstmt.executeUpdate();
 		}catch(Exception e){
-			layout.openAlertError("ERRO AO CRIAR TELAS", ("Nï¿½o foi possivel criar as tabelas!" + e.getMessage()));
-			throw new RuntimeException();
+			layout.openAlertError("ERRO AO CRIAR TELAS", ("Não foi possivel criar as tabelas!" + e.getMessage()));
+			return;
 		}				
 	}
 }

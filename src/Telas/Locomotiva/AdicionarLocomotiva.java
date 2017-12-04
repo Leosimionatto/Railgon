@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
-//import javax.swing.text.MaskFormatter;
 import javax.swing.border.TitledBorder;
 
 import com.jgoodies.forms.layout.CellConstraints;
@@ -12,12 +11,21 @@ import com.jgoodies.forms.layout.FormLayout;
 
 import Entidades.Locomotiva;
 import Entidades.VeiculoFerroviario;
+
 import Repositorio.Controller;
 import Repositorio.Factory;
 import Repositorio.FactoryLayout;
-import Telas.Interface.ITelas;
 
+import Telas.Comum.PosicaoTela;
+
+/** Classe responsável por criar uma janela para realizar a manutenção de uma locomotiva
+ * 
+ * @author Traldi
+ *
+ */
 public class AdicionarLocomotiva extends JFrame{
+
+	private PosicaoTela pTela;
 	
 	//declarações necessárias para atualizar a tabela
 	private LocomotivaTableModel modelo;
@@ -125,8 +133,6 @@ public class AdicionarLocomotiva extends JFrame{
 		JCBbitola.setModel(DCBMbitola);
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		setLocation(450, 300);
-		setResizable(false);
 		
 		Jhead();
 		Jbody();
@@ -136,6 +142,12 @@ public class AdicionarLocomotiva extends JFrame{
 		cp.add(Jhead, BorderLayout.NORTH);
 		cp.add(Jbody, BorderLayout.CENTER);
 		cp.add(Jfooter, BorderLayout.SOUTH);
+		
+		cp.setSize(cp.getMinimumSize().width, cp.getMinimumSize().height);
+		pTela = new PosicaoTela();
+		setLocation(pTela.Width(cp.getWidth()), pTela.Height(cp.getHeight()));
+		setResizable(false);
+		
 		pack();
 	}
 	
