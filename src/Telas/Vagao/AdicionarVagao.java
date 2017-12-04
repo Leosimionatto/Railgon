@@ -18,6 +18,11 @@ import Repositorio.Controller;
 
 import Telas.Comum.PosicaoTela;
 
+/**Classe responsável por criar uma janela para realizar a manutenção de um vagão
+ * 
+ * @author RailgonTeam
+ *
+ */
 public class AdicionarVagao extends JFrame{
 	
 	private PosicaoTela pTela;
@@ -77,7 +82,11 @@ public class AdicionarVagao extends JFrame{
 	//declarando factory para chamada de telas.
 	private FactoryLayout fLayout = new FactoryLayout();
 	
-	//construtor para que seja visualizado pelo usuario na tela da composição(readonly)
+	
+	/**construtor para que seja visualizado pelo usuario na tela da composição(readonly)
+	 * 
+	 * @param v
+	 */
 	public AdicionarVagao(Vagao v) {
 		this();
 		vagao = v;
@@ -106,8 +115,13 @@ public class AdicionarVagao extends JFrame{
 		this.setTitle(v.getIdentificacao());
 	}
 	
-	//no caso de ter vagao adicionado, o botão excluir ira aparecer na tela
-	//Setando campos do vagao para caso haja adicionado, ira poder excluir.
+	
+	/**construtor para que seja populado o conteudo na tela para alterar e excluir vagão 
+	 * 
+	 * @param md
+	 * @param linhaSelecionada
+	 * @param v
+	 */
 	public AdicionarVagao(VagaoTableModel md, int linhaSelecionada, Vagao v) {
 		this(md);
 		vagao = v;
@@ -137,14 +151,21 @@ public class AdicionarVagao extends JFrame{
 		this.setTitle("Alterar Vagão");
 	}
 	
-	//construtor para cadastrar vagao
+	
+	/**construtor para cadastrar vagao
+	 * 
+	 * @param md
+	 */
 	public AdicionarVagao(VagaoTableModel md) {
 		this(); // ajusta título
 		modelo = md;
 		this.setTitle("Adicionar Vagao");
 	}
 	
-	//metodo para intanciar meus componentes e seta as secoes na janela
+	
+	/**metodo para intanciar meus componentes e seta as secoes na janela
+	 * 
+	 */
 	public AdicionarVagao() {
 		super();
 		
@@ -207,7 +228,9 @@ public class AdicionarVagao extends JFrame{
 		tela = new FactoryLayout();
 	}
 	
-	//conteudo do titulo
+	/**gera o head da tela, onde ficará o conteudo do titulo
+	 * 
+	 */
 	private void Jhead() {
 		FormLayout layouthead = new FormLayout(
 				"60dlu, pref, pref, 5dlu,pref ", // colunas
@@ -226,7 +249,9 @@ public class AdicionarVagao extends JFrame{
 		Jhead.add(JLlocomotiva,cc.xy(5,2));	
 	}
 
-	//conteudo do formulário
+	/**gera o body da tela, onde ficara o conteudo do formulario
+	 * 
+	 */
 	private void Jbody() {
 		FormLayout layoutbody = new FormLayout(
 				"5dlu, pref, pref, 5dlu, 50dlu, 20dlu, min,pref, 5dlu, 50dlu, 5dlu, min", // colunas
@@ -259,7 +284,9 @@ public class AdicionarVagao extends JFrame{
 		
 	}
 	
-	//botoes do formulario
+	/**gera o footer da tela, onde ficara o conteudo do formulario
+	 * 
+	 */
 	private void Jfooter() {
 		FormLayout layoutfooter = new FormLayout(
 				"5dlu, pref,5dlu, pref, 5dlu,pref, 5dlu,pref, min,pref", // colunas
@@ -292,7 +319,9 @@ public class AdicionarVagao extends JFrame{
 		JBCancelar.addActionListener(jbCancelarActLt);
 	}
 	
-	//metodo gravar para usar no botao novo e salvar
+	/**metodo gravar para usar no botao novo e salvar
+	 * 
+	 */
 	public void gravar() {
 		//textField
 		//comprimento
@@ -356,7 +385,9 @@ public class AdicionarVagao extends JFrame{
 		}
 	}	
 	
-	//ação botão Salvar
+	/**implementação da ação do botão salvar
+	 * 
+	 */
 	ActionListener jbSalvarActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			gravar();
@@ -364,7 +395,9 @@ public class AdicionarVagao extends JFrame{
 		}				
 	};
 	
-	//ação botao Novo
+	/**implementação da ação do botão novo
+	 * 
+	 */
 	ActionListener jbNovoActLt = new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
 			  gravar();
@@ -380,7 +413,9 @@ public class AdicionarVagao extends JFrame{
 		}
 	};
 	
-	//ação botão excluir
+	/**implementação da ação do botão excluir
+	 * 
+	 */
 	ActionListener jbExCluirActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Factory f = new Factory();
@@ -403,7 +438,9 @@ public class AdicionarVagao extends JFrame{
 		}
 	};
 	
-	//ação botão Cancelar
+	/**implementação da ação do botão cancelar
+	 * 
+	 */
 	ActionListener jbCancelarActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			dispose();
