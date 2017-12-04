@@ -79,6 +79,13 @@ public class FactoryLayout {
 		new AdicionarComposicao(modelo).setVisible(true);
 	}
 	
+	/** Responsavel por exibir a tela de adicionar composição
+	 * @return void
+	 */
+	public void openAtualizarComposicao(ComposicaoTableModel modelo, int linhas, Composicao composicao){
+		new AdicionarComposicao(modelo, linhas, composicao).setVisible(true);
+	}
+	
 	/** Responsavel por abrir a tela da composicao com os dados já informados
 	 * @param modelo
 	 * @param linhas

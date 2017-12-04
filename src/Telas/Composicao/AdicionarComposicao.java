@@ -49,12 +49,14 @@ public class AdicionarComposicao extends JFrame{
 	
 	private JLabel  JLbDisponiveis;
 	private JLabel  JLbComposicao;
-	
+
 	private JButton JBadd; 
 	private JButton JBremove;
-	private JButton JBBuscar; 
+	private JButton JBup; 
+	private JButton JBdown; 
 
 	private JTextField JTFnome;
+	private JTextField JTFcodigo;
 	private JTextField JTFbitola;
 	private JTextField JTFcomprimento;
 	private JTextField JTFpesoAtual;
@@ -75,12 +77,23 @@ public class AdicionarComposicao extends JFrame{
 		this.linha = linha;
 		compos = c;
 		
-		JBBuscar.setEnabled(false);
+		AtualizaValores();
+		
 		JTFnome.setText(c.getDescricao());
+		JTFcodigo.setText(String.valueOf(c.getCodigo()));
+		
+		for(int i=0; i < compos.getLocomotivas().size(); i++){
+			DLMauxiliar.addElement(compos.getLocomotivas().get(i));
+		}
+		for(int i=0; i < compos.getVagoes().size();i++){
+			DLMauxiliar.addElement(compos.getVagoes().get(i));
+		}
+				
 	}
 	
 	public AdicionarComposicao(ComposicaoTableModel md){
 		
+		this.setTitle("Gerenciar Composição");
 		modelo = md;
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -117,49 +130,33 @@ public class AdicionarComposicao extends JFrame{
 		ArrayList<Vagao> ALVagoes = null;
 		ArrayList<Locomotiva> ALLocomotivas = null;
 		
-		//não foi passada uma instancia
-		if(compos == null){
-			
-			Factory fact = new Factory();
-			Controller control = fact.getController();
-			control.connect();
-			
-			compos = fact.getComposicao();
-			
-			try{
-				ALVagoes = control.selectVagoes();
-				ALLocomotivas = control.selectLocomotivas();
-			}catch(Exception e){
-				fLayout.openAlertError("ERRO INESPERADO", e.getMessage());
-				return;
-			}finally {
-				control.disconnect();
-			}		
-					
-			//populando os componentes com os valores do banco
+		Factory fact = new Factory();
+		Controller control = fact.getController();
+		control.connect();
+		
+		compos = fact.getComposicao();
+		
+		try{
+			ALVagoes = control.selectVagoesSemComposicao();
+			ALLocomotivas = control.selectLocomotivasSemComposicao();
+		}catch(Exception e){
+			fLayout.openAlertError("ERRO INESPERADO", e.getMessage());
+			return;
+		}finally {
+			control.disconnect();
+		}		
+				
+		//populando os componentes com os valores do banco
 
-			for(int i=0; i < ALLocomotivas.size();i++){
-				DLMdisponiveis.addElement(ALLocomotivas.get(i));
-			}
-			for(int i=0; i < ALVagoes.size();i++){
-				DLMdisponiveis.addElement(ALVagoes.get(i));
-			}
-		//existe uma composicao
-		}else{
-			ALVagoes 	  = compos.getVagoes();
-			ALLocomotivas = compos.getLocomotivas();
-			
-			for(int i=0; i < ALLocomotivas.size();i++){
-				DLMdisponiveis.addElement(ALLocomotivas.get(i));
-			}
-			for(int i=0; i < ALVagoes.size();i++){
-				DLMdisponiveis.addElement(ALVagoes.get(i));
-			}
-		}				
+		for(int i=0; i < ALLocomotivas.size();i++){
+			DLMdisponiveis.addElement(ALLocomotivas.get(i));
+		}
+		for(int i=0; i < ALVagoes.size();i++){
+			DLMdisponiveis.addElement(ALVagoes.get(i));
+		}						
 		
 		JLdisponiveis.setModel(DLMdisponiveis);
 		JLAuxiliar.setModel(DLMauxiliar);
-		//JLAuxiliar.setAutoscrolls(true);
 		JLdisponiveis.setAutoscrolls(true);
 
 		JSPdisponiveis.setViewportView(JLdisponiveis);
@@ -178,20 +175,25 @@ public class AdicionarComposicao extends JFrame{
 		
 		JTFnome 		 = new JTextField();
 		JTFbitola		 = new JTextField();
+		JTFcodigo        = new JTextField();
 		JTFcomprimento	 = new JTextField();
 		JTFpesoAtual	 = new JTextField();
 		JTFpesoMax		 = new JTextField();
 		JTFqtdVagao		 = new JTextField();
 		JTFqtdLocomotiva = new JTextField();		
-		
-		JBadd = new JButton(">");
-		JBremove  = new JButton("<");
+
+		JBadd    = new JButton(">");
+		JBremove = new JButton("<");
+		JBup 	 = new JButton("↑");
+		JBdown   = new JButton("↓");
 		
 		JBexcluir = new JButton("EXCLUIR");
 		JBsalvar = new JButton("SALVAR");
 		JBnovo = new JButton("NOVO");
 		JBcancelar = new JButton("CANCELAR");
-		JBBuscar = new JButton("PESQUISAR");
+		
+		JTFcodigo.setEnabled(false);
+		JTFcodigo.setText(String.valueOf(compos.getCodigo()));
 		
 		//chama os métodos de cada painel para construir seus componentes 
 		AtualizaValores();
@@ -204,7 +206,7 @@ public class AdicionarComposicao extends JFrame{
 	protected void iniciaHead(){
 		
 		FormLayout layout = new FormLayout(
-				"20dlu,100dlu,50dlu,100dlu,50dlu,80dlu", //colunas
+				"20dlu,pref,5dlu,20dlu,5dlu,150dlu,5dlu", //colunas
 				"15dlu,pref,15dlu" //linhas
 				);
 		
@@ -213,14 +215,14 @@ public class AdicionarComposicao extends JFrame{
 		JPhead = new JPanel(layout);
 		JPhead.setBorder( new TitledBorder("Composição"));
 		JPhead.add(JLbNome,cc.xy(2,2));
-		JPhead.add(JTFnome,cc.xy(4, 2));
-		JPhead.add(JBBuscar,cc.xy(6, 2));
+		JPhead.add(JTFcodigo,cc.xy(4,2));
+		JPhead.add(JTFnome,cc.xy(6, 2));
 	}
 	
 	protected void iniciaBody(){
 		
 		FormLayout layout = new FormLayout(
-				"30dlu,60dlu,40dlu,30dlu,pref,30dlu,60dlu,40dlu", //colunas
+				"30dlu,60dlu,40dlu,30dlu,pref,30dlu,60dlu,40dlu,15dlu,pref", //colunas
 				"10dlu,5dlu,40dlu,10dlu,20dlu,10dlu,20dlu,10dlu,40dlu,20dlu,10dlu" //linhas
 				);
 		
@@ -233,9 +235,10 @@ public class AdicionarComposicao extends JFrame{
 		JPbody.add(JLbComposicao, cc.xy(7,1));
 		JPbody.add(JBadd, cc.xy(5,4));
 		JPbody.add(JBremove,cc.xy(5,6));
+		JPbody.add(JBup, cc.xy(10,4));
+		JPbody.add(JBdown,cc.xy(10,6));
 		JPbody.add(JSPauxiliar, cc.xywh(7, 3, 2, 5));
-		JPbody.add(JPinfo, cc.xywh(2, 9, 7,2));
-		
+		JPbody.add(JPinfo, cc.xywh(2, 9, 7,2));	
 	}
 	
 	protected void iniciaInfo(){
@@ -251,12 +254,22 @@ public class AdicionarComposicao extends JFrame{
 		JPinfo.setLayout(layout);
 		JPinfo.setBorder(new TitledBorder("Resumo"));
 
+		//deixando os campos com uma cor descente para visualização
+		Color color = new Color(0,0,0);
+		JTFbitola.setDisabledTextColor(color);
+		JTFcomprimento.setDisabledTextColor(color);
+		JTFpesoAtual.setDisabledTextColor(color);
+		JTFpesoMax.setDisabledTextColor(color);
+		JTFqtdVagao.setDisabledTextColor(color);
+		JTFqtdLocomotiva.setDisabledTextColor(color);
+				
+		//desabilitar os campos para não deixar ser atualizados
 		JTFbitola.setEnabled(false);
 		JTFcomprimento.setEnabled(false);
 		JTFpesoAtual.setEnabled(false);
 		JTFpesoMax.setEnabled(false);
 		JTFqtdVagao.setEnabled(false);
-		JTFqtdLocomotiva.setEnabled(false);
+		JTFqtdLocomotiva.setEnabled(false);		
 		
 		JPinfo.add(JLbBitola, cc.xy(2, 1));
 		JPinfo.add(JTFbitola, cc.xy(4, 1));
@@ -351,6 +364,19 @@ public class AdicionarComposicao extends JFrame{
 				btnRemove();
 			}
 		});
+		
+		JBup.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnUp();
+			}
+		});
+		
+		JBdown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				btnDown();
+			}
+		});
+		
 		//chama o método EXCLUIR
 		JBexcluir.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -405,22 +431,39 @@ public class AdicionarComposicao extends JFrame{
 			//posicao do vagao na lista e o próprio vagão
 			int pos = JLdisponiveis.getSelectedIndex();
 			VeiculoFerroviario vf = JLdisponiveis.getSelectedValue();
+			Locomotiva l=null;
+			Vagao v=null;
+			int posLista = DLMauxiliar.size();
 			
 			//descobre qual o tipo do elemento escolhido
 			if(vf instanceof Locomotiva){
-				Locomotiva l = (Locomotiva) vf;
+				l = (Locomotiva) vf;
 				compos.add(l);				
 			}else{
-				Vagao v = (Vagao) vf;
+				v = (Vagao) vf;
 				compos.add(v);
 			}
 			
 			//tira o elemento da lista
 			DLMdisponiveis.remove(pos);
 			
-			//adiciona o elemnto na lista de elementos da composição
-			DLMauxiliar.addElement(vf);
-			 //JLAuxiliar.setModel(DLMauxiliar);
+			//adiciona o elemento na lista de elementos da composição
+			
+			for(int i=0; i < DLMauxiliar.size(); i++ ){
+				VeiculoFerroviario aux = DLMauxiliar.getElementAt(i); 
+				if(aux instanceof Vagao){
+					Vagao vAux = (Vagao) aux;
+					if(vAux.getSubTipo() == v.getSubTipo()){
+						posLista = i+1;
+						break;
+					}else if(vAux.getTipo() == v.getTipo()){
+						posLista = i+1;
+						break;
+					}
+				}
+			}
+			DLMauxiliar.add(posLista, vf);
+			//DLMauxiliar.addElement(vf);
 		}
 		catch(Exception e){
 			fLayout.openAlertError("ERRO INESPERADO", e.getMessage());
@@ -497,7 +540,7 @@ public class AdicionarComposicao extends JFrame{
 	//implementação do método Salvar
 	private void btnSalvar(){
 		
-		compos.setDescricao(JTFnome.getText());
+		compos.setDescricao(JTFnome.getText().trim());
 		
 		if(!validacao()){
 			return;
@@ -508,15 +551,68 @@ public class AdicionarComposicao extends JFrame{
 			Factory f = new Factory();
 			Controller control = f.getController();
 			
-			control.update(compos);
+			control.connect();
 			
-			modelo.addComposicao(compos);
+			int retorno = control.update(compos);
 			
-			fLayout.openAlertInfo("SUCESSO", "A COMPOSIÇÃO FOI SALVA COM SUCESSO!");
+			if(retorno == 1){
+				fLayout.openAlertInfo("SUCESSO", "A COMPOSIÇÃO FOI SALVA COM SUCESSO!");
+			}else if(retorno == 2){
+				fLayout.openAlertInfo("SUCESSO", "A COMPOSIÇÃO FOI ATUALIZADA COM SUCESSO!");
+			}else{
+				fLayout.openAlertError("ERRO INESPERADO", "NEM JESUIS SALVA! :D");
+			}
+			//modelo.addComposicao(compos);
 			dispose();
 		}catch(Exception e){
 			fLayout.openAlertError("ERRO AO SALVAR", e.getMessage());
 		}
+	}
+	
+	private void btnUp(){
+		int pos = JLAuxiliar.getSelectedIndex();
+		
+		if (pos < 0){
+			return;
+		}
+		
+		int posAnt = pos-1;
+		
+		VeiculoFerroviario vf  = DLMauxiliar.get(pos);
+		VeiculoFerroviario aux = DLMauxiliar.get(posAnt);
+		
+		//se esta tentando movimentar um vagão
+		if(vf instanceof Vagao){
+			//se esta tentando movimentar o primeiro elemento
+			if(JLAuxiliar.getSelectedIndex() == 1){
+				fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ser o primeiro de uma composição!");
+				return;
+			}
+			//verifica se o item anterior é uma locomotiva
+			if(aux instanceof Locomotiva){
+				fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ficar entre locomotivas!");
+				return;
+			}
+			
+			Vagao v    = (Vagao) vf;
+			Vagao vAnt = (Vagao) aux;
+			
+			if(v.getSubTipo() == vAnt.getSubTipo()){
+				DLMauxiliar.set(posAnt, v);
+				DLMauxiliar.set(pos, vAnt);
+				return;
+			}else{
+				if(v.getTipo() == vAnt.getTipo()){
+					DLMauxiliar.set(posAnt, v);
+					DLMauxiliar.set(pos, vAnt);
+					return;
+				}
+			}
+		}
+	}
+
+	private void btnDown(){
+		fLayout.openAlertWarning("aguarde", "Aguardando implementacao");
 	}
 	
 	//implementação do método Novo
@@ -528,6 +624,8 @@ public class AdicionarComposicao extends JFrame{
 			DLMdisponiveis.addElement(DLMauxiliar.getElementAt(i));
 		}
 		DLMauxiliar.removeAllElements();
+		
+		AtualizaValores();
 	}
 	
 	//implementação do método Novo

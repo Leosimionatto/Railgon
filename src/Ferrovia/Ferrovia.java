@@ -1,130 +1,63 @@
 package Ferrovia;
 
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Scanner;
 
 import Entidades.*;
 import Repositorio.*;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-		
+import Telas.Composicao.ComposicaoTableModel;
 public class Ferrovia {
 	
 	public static void main (String args[]){
 		
 		Factory f = new Factory();
+		FactoryLayout fLayout = new FactoryLayout();
+		
 		
 		Controller control = f.getController();
-		
 		control.connect();
-		
-		/*try{
-			
-			ArrayList<Locomotiva> c = control.selectLocomotivas();		
-			
-			
-			Collections.sort(c);
-			
-			for(int i=0; i< c.size(); i++){
-				System.out.println(c.get(i).getOrdemComposicao());
-			}
-			
-		}catch(Exception e){
-			System.out.println(e.getMessage());
-		}	*/
+
+		char[] prop = {'1','2','3','4','5'};
+		char[] prop1 = {'1','4','7','4','5'};
+		char[] prop2 = {'1','5','9','4','5'};
 		
 		try{
 			
-			ArrayList<Vagao> c = control.selectVagoes();		
+			Vagao v1 = f.getVagao(Vagao.Bitola.G, Vagao.Tipo.A, Vagao.SubTipo.C, prop, 80.8);
+			Vagao v2 = f.getVagao(Vagao.Bitola.G, Vagao.Tipo.A, Vagao.SubTipo.D, prop, 80.8);
+			Vagao v3 = f.getVagao(Vagao.Bitola.G, Vagao.Tipo.C, Vagao.SubTipo.C, prop, 80.8);
+
+			control.create(v1);
+			control.create(v2);
+			control.create(v3);
 			
-			
-			Collections.sort(c);
-			
-			for(int i=0; i< c.size(); i++){
-				System.out.println(c.get(i));
-			}
+			System.out.println("foi");
 			
 		}catch(Exception e){
 			System.out.println(e.getMessage());
-		}	
-		
-		/*
-		//recebe a classe com o método de conexao
-		Connection conn = null;
+		}
+		/*try{
 			
-		//responsavel por receber os resutlados do sql
-		ResultSet rs = null;
-		
-		//responsavel por receber os comandos SQL e executa-los no banco
-		Statement stmt = null;
-		
-		Scanner scan = new Scanner(System.in);
-		
-		int resp = 0;
-		int cont = 0;
-		String sql = "";
-		
-		try {
+			ArrayList<Composicao> c = control.selectComposicoes();
 			
-			conn = Conexao.getInstance().On();
-			
-			stmt = conn.createStatement();
-			
-			do{
-				sql = ""; cont = 0;
+			for(int j=0; j < c.size(); j++){
+				ArrayList<Locomotiva> l = c.get(0).getLocomotivas();
+				ArrayList<Vagao> v = c.get(0).getVagoes();
 				
-				System.out.println("Informe a operação (0=Finalizar | 1= Criar Tabela | 2= Criar Cliente | 3= EXIBIR CLIENTES | 4= APAGAR TABELA ):");
-				resp = scan.nextInt();
+				System.out.println(c.get(j).getCodigo());
+				System.out.println(c.get(j).getDescricao());
 				
-				switch(resp){
-					case 1:
-						sql = "CREATE TABLE CLIENTE ( ID INT GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1) PRIMARY KEY, NOME VARCHAR(30))";
-						cont = stmt.executeUpdate(sql);
-						System.out.println("Tabela CLIENTE criada " + cont);
-					break;	
-					case 2:
-						System.out.print("NOME CLIENTE: ");
-						String nome = scan.next();
-						sql = "INSERT INTO CLIENTE (NOME) VALUES ('" + nome + "')";
-						cont = stmt.executeUpdate(sql);
-						System.out.println("Registro inserido " + cont);
-					break;
-					case 3:
-						sql = "SELECT * FROM CLIENTE";
-						rs = stmt.executeQuery(sql);
-						
-						while(rs.next()){						
-							System.out.println("ID: " + rs.getInt("ID") + " NOME: " + rs.getString("NOME"));
-						}				
-					break;
-					case 4:
-						sql = "DROP TABLE CLIENTE";
-						cont = stmt.executeUpdate(sql);
-						System.out.println("Tabela CLIENTE apagada " + cont);
-					break;
-					case 5:
-						sql = "CREATE DATABASE TESTE; USE TESTE;";
-						cont = stmt.executeUpdate(sql);
-						System.out.println("database apagado " + cont);
-					break;
+				for(int i=0; i < l.size(); i++){
+					System.out.println(l);
 				}
 				
-			}while(resp!=0);
-			
-			rs.close();
-			stmt.close();
-			conn.close();
+				for(int i=0; i < v.size(); i++){
+					System.out.println(v);
+				}
+			}					
 			
 		}catch(Exception e){
-			System.err.print(e.getMessage());
-		}	
-		
-		Conexao.getInstance().Off();
-		System.exit(0);
-		
+			System.out.println(e.getMessage());
+		}
 		*/
 	}
 }	

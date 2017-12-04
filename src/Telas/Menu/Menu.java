@@ -1,5 +1,6 @@
 package Telas.Menu;
 
+import java.awt.Image;
 import java.awt.event.*;
 
 import javax.swing.*;
@@ -36,6 +37,9 @@ public class Menu extends JFrame {
 		
 		// Construtor passando título
 		super("Railgon");
+		
+		ImageIcon imgIcon = new ImageIcon("res/LogoRailgon.png");
+		this.setIconImage(imgIcon.getImage());
 		
 		// Instanciando o menu
 		JMenuBar mb = new JMenuBar();
