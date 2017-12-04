@@ -676,28 +676,4 @@ public class Controller {
 	public int remove(int cod){
 		return this.remove(this.selectComposicao(cod));
 	}
-	
-	public void teste(){
-		try{			
-			String apagar1 = "DROP TABLE COMPOSICAO_LOCOMOTIVA";
-			String apagar2 = "DROP TABLE COMPOSICAO_VAGAO";
-			String apagar3 = "DROP TABLE COMPOSICAO";
-			
-			String apagar4 = "CREATE TABLE COMPOSICAO (ID INT GENERATED ALWAYS AS IDENTITY, DESCRICAO VARCHAR(200) NOT NULL, BITOLA CHAR NOT NULL, QTDLOCOMOTIVA INT NOT NULL, QTDVAGAO INT DEFAULT 0, COMPRIMENTO DOUBLE NOT NULL, PRIMARY KEY(ID), FOREIGN KEY (BITOLA) REFERENCES BITOLA(NOME))";
-			String apagar5 = "CREATE TABLE COMPOSICAO_VAGAO (CODCOMPOSICAO INT NOT NULL, CODVAGAO VARCHAR(9) NOT NULL, ORDEM INT NOT NULL, PRIMARY KEY(CODCOMPOSICAO, CODVAGAO), FOREIGN KEY (CODVAGAO) REFERENCES VAGAO(IDENTIFICACAO), FOREIGN KEY (CODCOMPOSICAO) REFERENCES COMPOSICAO(ID))";
-			String apagar6 = "CREATE TABLE COMPOSICAO_LOCOMOTIVA (CODCOMPOSICAO INT NOT NULL, CODLOCOMOTIVA INT NOT NULL, ORDEM INT NOT NULL, PRIMARY KEY(CODCOMPOSICAO, CODLOCOMOTIVA), FOREIGN KEY (CODLOCOMOTIVA) REFERENCES LOCOMOTIVA(CLASSE), FOREIGN KEY (CODCOMPOSICAO) REFERENCES COMPOSICAO(ID))";
-			
-			try{
-				Statement stmt = conn.createStatement();
-				System.out.println(stmt.execute(apagar4));
-				System.out.println(stmt.execute(apagar5));
-				System.out.println(stmt.execute(apagar6));
-			}catch(Exception e){
-				System.out.println(e.getMessage());
-			}
-			
-		}catch(Exception e){
-			System.out.println(e.getMessage());
-		}
-	}
 }

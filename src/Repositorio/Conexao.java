@@ -88,7 +88,7 @@ public class Conexao{
 			return;
 		}
 	}
-	/** Responsavel por criar o banco na primeira execucao
+	/** Responsavel por ser o script base do projeto
 	 */
 	private void script(){
 		String DDLBitola = "CREATE TABLE BITOLA (NOME CHAR NOT NULL PRIMARY KEY, PESO DOUBLE NOT NULL, DISTANCIA DOUBLE NOT NULL)";
