@@ -96,7 +96,7 @@ public class AdicionarLocomotiva extends JFrame{
 		this.JTcampoPesomaxreb.setText(String.valueOf(locomotiva.getPesoMax()));
 		this.JCBbitola.setSelectedItem( VeiculoFerroviario.Bitola.valueOf(String.valueOf(locomotiva.getBitola())));		
 		this.JTcampoComploc.setText(String.valueOf(locomotiva.getComprimento()));
-		JBExcluir.setVisible(true);
+		JBExcluir.setEnabled(true);
 		this.setTitle("Alterar Locomotiva");
 	}
 	
