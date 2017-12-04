@@ -74,18 +74,7 @@ public class ListarVagao extends JFrame implements ITelas<VagaoTableModel>{
                 	editarVagao(vagaoEditar);
 				}
 				if(e.getKeyCode() == KeyEvent.VK_DELETE){
-					int confirm = tela.openConfirm("Tem certeza que deseja excluir o vagão?");
-					if(confirm == 0){
-						try{
-						    c.connect();
-						    c.remove(vagaoEditar);
-						    tela.openAlertInfo("", "Excluído com sucesso.");
-						    c.disconnect();
-						}
-						catch(Exception ex){
-							tela.openAlertError("ERRO AO EXCLUIR VAGÃO", ex.getMessage());
-						}
-					}
+					excluirVagao(vagaoEditar);
 				}
 				
 			}
@@ -106,6 +95,22 @@ public class ListarVagao extends JFrame implements ITelas<VagaoTableModel>{
 		        }
 		} catch (Exception e) {
 			tela.openAlertError(null, e.getMessage());
+		}
+	}
+	
+	protected void excluirVagao(Vagao vagaoExcluir){
+		int confirm = tela.openConfirm("Tem certeza que deseja excluir o vagão?");
+		if(confirm == 0){
+			try{
+			    c.connect();
+			    c.remove(vagaoEditar);
+			    tela.openAlertInfo("", "Excluído com sucesso.");
+			    c.disconnect();
+				modelo.removeVagao(tabela.getSelectedRow());
+			}
+			catch(Exception ex){
+				tela.openAlertError("ERRO AO EXCLUIR VAGÃO", ex.getMessage());
+			}
 		}
 	}
 

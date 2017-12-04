@@ -59,7 +59,7 @@ public class Menu extends JFrame {
 		setExtendedState(this.MAXIMIZED_BOTH);
 		
 		//Chama a tela da aplicação
-		//getContentPane().add(panelSobre.GetPanel());
+		getContentPane().add(panelSobre.GetPanel());
 		
 		//panelListarVagao.add(telas.openListarVagao());
 	}

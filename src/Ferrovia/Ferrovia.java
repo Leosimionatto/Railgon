@@ -21,7 +21,7 @@ public class Ferrovia {
 		
 		control.connect();
 		
-		try{
+		/*try{
 			
 			ArrayList<Locomotiva> c = control.selectLocomotivas();		
 			
@@ -30,6 +30,21 @@ public class Ferrovia {
 			
 			for(int i=0; i< c.size(); i++){
 				System.out.println(c.get(i).getOrdemComposicao());
+			}
+			
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}	*/
+		
+		try{
+			
+			ArrayList<Vagao> c = control.selectVagoes();		
+			
+			
+			Collections.sort(c);
+			
+			for(int i=0; i< c.size(); i++){
+				System.out.println(c.get(i));
 			}
 			
 		}catch(Exception e){

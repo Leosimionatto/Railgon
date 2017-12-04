@@ -34,7 +34,7 @@ public class FactoryLayout {
 	 * @return void
 	 */
 	public void openVisualizarVagao(Vagao vagao){
-		//new AdicionarVagao(vagao).setVisible(true);
+		new AdicionarVagao(vagao).setVisible(true);
 	}
 	
 	/** Responsavel por exibir a tela de listar vagão
