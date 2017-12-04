@@ -24,7 +24,7 @@ public class AdicionarVagao extends JFrame{
 	
 	private VagaoTableModel modelo;
 	private Vagao vagao = null;
-	private int linha;
+	private int linha = -1;
 	
 	//declarando botoes
 	private JButton JBExcluir;
@@ -61,6 +61,9 @@ public class AdicionarVagao extends JFrame{
 	//tipo
 	private DefaultComboBoxModel<Vagao.Tipo> DCBMTipo; 
 	private JComboBox<Vagao.Tipo> JCBTipo;
+	
+	//variavel para nao apagar os campos quando clicar no novo
+	boolean pode = true;
 	
 	//declarando seções da janela
 	JPanel Jhead;
@@ -126,12 +129,15 @@ public class AdicionarVagao extends JFrame{
 		this.JCBSubTipo.setEnabled(false);
 		
 		//botão
-		JBExcluir.setVisible(true); 
+		JBExcluir.setEnabled(true);
+		
+		JBNovo.setVisible(false);
 		
 		//setando o titulo da janela
 		this.setTitle("Alterar Vagão");
 	}
 	
+	//construtor para cadastrar vagao
 	public AdicionarVagao(VagaoTableModel md) {
 		this(); // ajusta título
 		modelo = md;
@@ -146,21 +152,24 @@ public class AdicionarVagao extends JFrame{
 		JTComprimento = new JTextField();
 		JTProprietario = new JTextField();
 		
-		//comboBox
+		//populando comboBox 
 		//bitola
 		DCBMbitola = new DefaultComboBoxModel<>(VeiculoFerroviario.Bitola.values());
 		JCBBitola = new JComboBox<>();
 		JCBBitola.setModel(DCBMbitola);
+		JCBBitola.setSelectedItem(null);
 		
 		//subtipo
 		DCBMSubTipo = new DefaultComboBoxModel<>(Vagao.SubTipo.values());
 		JCBSubTipo = new JComboBox<>();
 		JCBSubTipo.setModel(DCBMSubTipo);
+		JCBSubTipo.setSelectedItem(null);
 		
 		//tipo
 		DCBMTipo = new DefaultComboBoxModel<>(Vagao.Tipo.values());
 		JCBTipo = new JComboBox<Vagao.Tipo>();
 		JCBTipo.setModel(DCBMTipo);
+		JCBTipo.setSelectedItem(null);
 		
 		//labels
 		JLTitulo = new JLabel("Cadastrar Vagão");
@@ -198,6 +207,7 @@ public class AdicionarVagao extends JFrame{
 		tela = new FactoryLayout();
 	}
 	
+	//conteudo do titulo
 	private void Jhead() {
 		FormLayout layouthead = new FormLayout(
 				"60dlu, pref, pref, 5dlu,pref ", // colunas
@@ -239,13 +249,14 @@ public class AdicionarVagao extends JFrame{
 		JTComprimento = new JTextField();
 		Jbody.add(JTComprimento, cc.xyw(5,3,6));
 		
-		//Subtipo
-		Jbody.add(JLSubtipo, cc.xy(3, 5));
-		Jbody.add(JCBSubTipo, cc.xy(5,5));
-		
 		//Tipo
-		Jbody.add(JLTipo, cc.xy(3, 8)); 
-		Jbody.add(JCBTipo, cc.xy(5, 8));
+		Jbody.add(JLTipo, cc.xy(3, 5));  
+		Jbody.add(JCBTipo, cc.xy(5, 5));
+		
+		//Subtipo
+		Jbody.add(JLSubtipo, cc.xy(3, 8)); 
+		Jbody.add(JCBSubTipo, cc.xy(5,8));
+		
 	}
 	
 	//botoes do formulario
@@ -281,77 +292,91 @@ public class AdicionarVagao extends JFrame{
 		JBCancelar.addActionListener(jbCancelarActLt);
 	}
 	
+	//metodo gravar para usar no botao novo e salvar
+	public void gravar() {
+		//textField
+		//comprimento
+		double valorComprimento = 0;
+		try {
+			valorComprimento = Double.parseDouble(JTComprimento.getText());
+		}catch(NumberFormatException err ){
+			fLayout.openAlertError(null,"O campo comprimento necessita ser preenchido corretamente!");
+			pode = false;
+			return;
+		}
+		String valorProprietario = JTProprietario.getText();
+		
+		//comboBox
+		VeiculoFerroviario.Bitola valorBitola = (Entidades.VeiculoFerroviario.Bitola) JCBBitola.getSelectedItem();
+		Vagao.SubTipo valorSubtipo = (Entidades.Vagao.SubTipo) JCBSubTipo.getSelectedItem();
+		Vagao.Tipo valorTipo = (Entidades.Vagao.Tipo) JCBTipo.getSelectedItem();
+		
+		if(valorProprietario.isEmpty() || valorProprietario.length() != 6) {
+			fLayout.openAlertError(null,"Preencha a propritário corretamente!");
+			pode = false;
+			return;
+		} else if(JCBBitola.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Bitola","A Bitola necessita ser preenchido corretamente.");
+			pode = false;
+			return;
+		} else if(JCBSubTipo.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Subtipo","O Subtipo necessita ser preenchido corretamente.");
+			pode = false;
+			return;
+		} else if(JCBTipo.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Tipo","O Tipo necessita ser preenchudo corretamente.");
+			pode = false;
+			return;
+		}
+		
+		//acao para caso clique no botao salvar e todos os campos estejam certos
+		//conexao com o banco de dados, salvar no banco de dados e desconectar do banco
+		Factory f = new Factory();
+		Controller c = f.getController();
+		try {
+			Vagao v = f.getVagao(valorBitola, valorTipo, valorSubtipo, valorProprietario.toCharArray(), valorComprimento);
+			c.connect();
+			if(vagao == null){
+				c.create(v);//salvar no banco
+				fLayout.openAlertWarning(null,"Vagão salvo com sucesso!");
+				modelo.addVagao(v);
+				pode = true;
+			}
+			else {
+				c.update(v);
+				fLayout.openAlertWarning(null,"Vagãos alterado com sucesso!");
+				modelo.updateVagao(linha, v);
+				pode = true;
+			}
+		}catch(Exception err){
+			fLayout.openAlertWarning(null,err.getMessage());
+			return;
+		}finally{
+			c.disconnect();//desconectar do banco
+		}
+	}	
+	
 	//ação botão Salvar
 	ActionListener jbSalvarActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			//textField
-			//comprimento
-			double valorComprimento = 0;
-			try {
-				valorComprimento = Double.parseDouble(JTComprimento.getText());
-			}catch(NumberFormatException err ){
-				fLayout.openAlertError(null,"O campo comprimento necessita ser preenchido corretamente!");
-				return;
-			}
-			String valorProprietario = JTProprietario.getText();
-			
-			//comboBox
-			VeiculoFerroviario.Bitola valorBitola = (Entidades.VeiculoFerroviario.Bitola) JCBBitola.getSelectedItem();
-			Vagao.SubTipo valorSubtipo = (Entidades.Vagao.SubTipo) JCBSubTipo.getSelectedItem();
-			Vagao.Tipo valorTipo = (Entidades.Vagao.Tipo) JCBTipo.getSelectedItem();
-			
-			if(valorProprietario.isEmpty() || valorProprietario.length() != 6) {
-				fLayout.openAlertError(null,"Preencha a propritário corretamente!");
-				return;
-			} else if(JCBBitola.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Bitola","A Bitola necessita ser preenchido corretamente.");
-				return;
-			} else if(JCBSubTipo.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Subtipo","O Subtipo necessita ser preenchido corretamente.");
-				return;
-			} else if(JCBTipo.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Tipo","O Tipo necessita ser preenchudo corretamente.");
-				return;
-			}
-			
-			//acao para caso clique no botao salvar e todos os campos estejam certos
-			//conexao com o banco de dados, salvar no banco de dados e desconectar do banco
-			Factory f = new Factory();
-			Controller c = f.getController();
-			try {
-				Vagao v = f.getVagao(valorBitola, valorTipo, valorSubtipo, valorProprietario.toCharArray(), valorComprimento);
-				c.connect();
-				if(vagao == null){
-					c.create(v);//salvar no banco
-					fLayout.openAlertWarning(null,"Vagão salvo com sucesso!");
-					modelo.addVagao(v);
-				}
-				else {
-					c.update(v);
-					fLayout.openAlertWarning(null,"Vagãos alterado com sucesso!");
-					modelo.updateVagao(linha, v);
-				}
-				
-			}catch(Exception err){
-				fLayout.openAlertWarning(null,err.getMessage());	
-			}finally{
-				c.disconnect();//desconectar do banco
-			}
+			gravar();
 			dispose();
-		}	
-		
+		}				
 	};
 	
 	//ação botao Novo
 	ActionListener jbNovoActLt = new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-				JTComprimento.setText("");
-				if(vagao == null){
-					JTProprietario.setText("");
-					JCBBitola.setSelectedItem(null);
-					JCBSubTipo.setSelectedItem(null);
-					JCBTipo.setSelectedItem(null);
-				}
+			  gravar();
+			  if(pode) {
+				  JTComprimento.setText("");
+					if(linha == -1){
+						JTProprietario.setText("");
+						JCBBitola.setSelectedItem(null);
+						JCBSubTipo.setSelectedItem(null);
+						JCBTipo.setSelectedItem(null);
+					}  
+			  }
 		}
 	};
 	
@@ -384,10 +409,4 @@ public class AdicionarVagao extends JFrame{
 			dispose();
 		}
 	}; 
-	
-	public JPanel GetPanel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }
