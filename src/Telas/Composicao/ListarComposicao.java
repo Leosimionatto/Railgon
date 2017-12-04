@@ -31,7 +31,7 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
     private Controller c = f.getController();
 	
 	List<Composicao> lista;
-	private String[] colunas = new String[]{ "Código", "Descrição", "Bitola", "# Locomotiva", "# Vagões", "Comprimento", "Peso Máximo", "Peso Atual"};
+	private String[] colunas = new String[]{ "Cï¿½digo", "Descriï¿½ï¿½o", "Bitola", "# Locomotiva", "# Vagï¿½es", "Comprimento", "Peso Mï¿½ximo", "Peso Atual"};
 	
 	public ListarComposicao() {
 		criaJTable();
@@ -47,7 +47,7 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 			getContentPane().add(painelFundo);
 		}
 		
-		// Método responsável por criar a tabela e chamar o mÃ©todo que lista os dados
+		// Mï¿½todo responsï¿½vel por criar a tabela e chamar o mÃ©todo que lista os dados
 		private void criaJTable() {
 	        tabela = new JTable(modelo);
 	        
@@ -89,7 +89,7 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 	        pesquisar();
 	    }
 		
-		// Método responsável por listar os dados do vagão e jogar na tabela
+		// Mï¿½todo responsï¿½vel por listar os dados do vagï¿½o e jogar na tabela
 		private void pesquisar() {
 			try{
 				c.connect();
@@ -98,7 +98,7 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 		        tabela.setModel(modelo);
 			}
 	        catch(Exception e){
-	        	tela.openAlertError("ERRO LISTAR COMPOSIÇÕES", "Ocorreu um erro ao listar as composições: " + e.getMessage());
+	        	tela.openAlertError("ERRO LISTAR COMPOSIï¿½ï¿½ES", "Ocorreu um erro ao listar as composiï¿½ï¿½es: " + e.getMessage());
 	        }
 			finally{
 				//c.desconnect();
@@ -110,7 +110,9 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 				int linhaSelecionada = -1;
 		        linhaSelecionada = tabela.getSelectedRow();
 			        if (linhaSelecionada >= 0) {
-			            //tela.openAtualizarComposicao(modelo, linhaSelecionada, codigoComposicao);
+			        	c.connect();
+			        	Composicao compos = c.selectComposicao(codigoComposicao);
+			            tela.openAtualizarComposicao(modelo, linhaSelecionada, compos);
 			        }
 			} catch (Exception e) {
 				tela.openAlertError(null, e.getMessage());
@@ -123,12 +125,12 @@ public class ListarComposicao extends JFrame implements ITelas<ComposicaoTableMo
 				int linhaSelecionada = -1;
 		        linhaSelecionada = tabela.getSelectedRow();
 			        if (linhaSelecionada >= 0) {
-			        	int confirm = tela.openConfirm("Tem certeza que deseja excluir a composição?");
+			        	int confirm = tela.openConfirm("Tem certeza que deseja excluir a composiï¿½ï¿½o?");
 						if(confirm == 0){
 							try {
 								c.connect();
-								//c.remove(codigoComposicao);
-								tela.openAlertInfo("", "Excluído com sucesso.");
+								c.remove(codigoComposicao);
+								tela.openAlertInfo("", "Excluï¿½do com sucesso.");
 								modelo.removeComposicao(tabela.getSelectedRow());
 							} catch (Exception ex) {
 								tela.openAlertError("ERRO AO EXCLUIR COMPOSICAO", ex.getMessage());

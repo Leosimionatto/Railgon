@@ -59,7 +59,7 @@ public class Controller {
 			pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR O VAGÃO: " + v.getIdentificacao().toString() + e.getMessage());
+			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR O VAGÃO PORQUE ELE JÁ EXISTE: " + v.getIdentificacao());
 		}
 	}
 
@@ -78,7 +78,7 @@ public class Controller {
 			pstmt.setDouble(5, l.getPesoMax());
 			pstmt.executeUpdate();
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR A LOCOMOTIVA " + l.getClasse() + e.getMessage());
+			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR UMA LOCOMOTIVA PORQUE ELA JA EXISTE: " + l.getClasse());
 		}
 
 	}
@@ -86,8 +86,10 @@ public class Controller {
 	/** Responsavel por inserir uma Composicao no banco de dados
 	 * @param c A composicao que deve ser inserida no banco
 	 */
-	public void create(Composicao c) {
+	public int create(Composicao c) {
 		try {
+			double cod = 0.0;
+			
 			PreparedStatement pstmt;
 			Statement stmt;
 			ResultSet rs;
@@ -96,8 +98,6 @@ public class Controller {
 			String sqlC  = "INSERT INTO COMPOSICAO (DESCRICAO, BITOLA, QTDVAGAO, QTDLOCOMOTIVA, COMPRIMENTO) VALUES (?,?,?,?,?)";
 			String sqlV  = "INSERT INTO COMPOSICAO_VAGAO(CODCOMPOSICAO, CODVAGAO,ORDEM) VALUES (?,?,?)";
 			String sqlL  = "INSERT INTO COMPOSICAO_LOCOMOTIVA(CODCOMPOSICAO,CODLOCOMOTIVA,ORDEM) VALUES (?,?,?)";
-
-			double cod = 0.0;
 			
 			pstmt = conn.prepareStatement(sqlC);
 			pstmt.setString(1,c.getDescricao());
@@ -127,8 +127,10 @@ public class Controller {
 				pstmt.setInt(3, i);
 				pstmt.executeUpdate();
 			}			
+			
+			return (int) cod;
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR A COMPOSICAO: " + e.getMessage());
+			throw new RuntimeException("NÃO FOI POSSIVEL CRIAR A COMPOSICAO PORQUE ELA JA EXISTE: " + c.getCodigo());
 		}
 	}
 	
@@ -466,7 +468,7 @@ public class Controller {
 	
 	/** Responsavel por atualizar uma composição, apagando, atualizando e inserindo os elementos na composição 
 	 * @param c
-	 * @return Retorna 1 se criou a composição e 2 se atualizou
+	 * @return Retorna o codigo se criou a composição e -1 se atualizou
 	 */
 	public int update(Composicao c){
 		String sqlUpdateComposicao  = "UPDATE COMPOSICAO SET DESCRICAO = ?, BITOLA = ?, QTDVAGAO = ?, QTDLOCOMOTIVA = ?, COMPRIMENTO = ? WHERE ID = ? ";
@@ -490,8 +492,7 @@ public class Controller {
 			try{
 				Caux = selectComposicao(c.getCodigo());
 			}catch(Exception e){
-				create(c);
-				return 1;
+				return create(c);
 			}
 			
 			ALlocomotivaAux  = Caux.getLocomotivas();
@@ -557,12 +558,11 @@ public class Controller {
 				//percorre os vagões que estao no banco
 				for(int i=0; i < ALvagaoAux.size(); i++){
 					//se a lista que foi passada NAO tem um vagão do banco, exclui do banco
-					if(!ALvagao.contains(ALvagaoAux.get(i))){
-						
+					if(!ALvagao.contains(ALvagaoAux.get(i))){						
 						//remover vagão
 						pstmt = conn.prepareStatement(sqlDeleteVagao);
 						pstmt.setInt(1,c.getCodigo());
-						pstmt.setString(2,ALvagao.get(i).getIdentificacao());						
+						pstmt.setString(2,ALvagaoAux.get(i).getIdentificacao());						
 						pstmt.executeUpdate();
 					}
 				}
@@ -589,7 +589,7 @@ public class Controller {
 					}
 				}
 			}
-			return 2;
+			return -1;
 		}catch (Exception e) {
 			throw new RuntimeException("NÃO FOI POSSIVEL ATUALIZAR A COMPOSIÇÃO: " + c.getCodigo() + " " + e.getMessage());
 		}
@@ -608,7 +608,7 @@ public class Controller {
 			pstmt.setString(1, v.getIdentificacao());
 			return pstmt.executeUpdate();		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER O VAGÃO: ELE ESTÁ EM UMA COMPOSIÇÃO!");
+			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER O VAGÃO PORQUE ELE PERTENCE A UMA COMPOSIÇÃO!");
 		}
 	}
 	
@@ -626,7 +626,7 @@ public class Controller {
 			return pstmt.executeUpdate();
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÁ EM UMA COMPOSIÇÃO!");
+			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA PORQUE ELA ESTÁ EM UMA COMPOSIÇÃO!");
 		}
 	}
 
@@ -669,7 +669,7 @@ public class Controller {
 			throw new RuntimeException("ERRO AO APAGAR COMPOSICAO");
 		
 		} catch (Exception e) {
-			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA: ELA ESTÃ� EM UMA COMPOSIÃ‡ÃƒO!");
+			throw new RuntimeException("NÃO FOI POSSIVEL REMOVER A LOCOMOTIVA PORQUE ELA ESTÁ EM UMA COMPOSIÇÃO!");
 		}
 	}
 	
