@@ -18,13 +18,18 @@ import Repositorio.Controller;
 
 import Telas.Comum.PosicaoTela;
 
+/**Classe responsável por criar uma janela para realizar a manutenção de um vagão
+ * 
+ * @author RailgonTeam
+ *
+ */
 public class AdicionarVagao extends JFrame{
 	
 	private PosicaoTela pTela;
 	
 	private VagaoTableModel modelo;
 	private Vagao vagao = null;
-	private int linha;
+	private int linha = -1;
 	
 	//declarando botoes
 	private JButton JBExcluir;
@@ -62,6 +67,9 @@ public class AdicionarVagao extends JFrame{
 	private DefaultComboBoxModel<Vagao.Tipo> DCBMTipo; 
 	private JComboBox<Vagao.Tipo> JCBTipo;
 	
+	//variavel para nao apagar os campos quando clicar no novo
+	boolean pode = true;
+	
 	//declarando seções da janela
 	JPanel Jhead;
 	JPanel Jbody;
@@ -74,7 +82,11 @@ public class AdicionarVagao extends JFrame{
 	//declarando factory para chamada de telas.
 	private FactoryLayout fLayout = new FactoryLayout();
 	
-	//construtor para que seja visualizado pelo usuario na tela da composição(readonly)
+	
+	/**construtor para que seja visualizado pelo usuario na tela da composição(readonly)
+	 * 
+	 * @param v
+	 */
 	public AdicionarVagao(Vagao v) {
 		this();
 		vagao = v;
@@ -103,8 +115,13 @@ public class AdicionarVagao extends JFrame{
 		this.setTitle(v.getIdentificacao());
 	}
 	
-	//no caso de ter vagao adicionado, o botão excluir ira aparecer na tela
-	//Setando campos do vagao para caso haja adicionado, ira poder excluir.
+	
+	/**construtor para que seja populado o conteudo na tela para alterar e excluir vagão 
+	 * 
+	 * @param md
+	 * @param linhaSelecionada
+	 * @param v
+	 */
 	public AdicionarVagao(VagaoTableModel md, int linhaSelecionada, Vagao v) {
 		this(md);
 		vagao = v;
@@ -126,19 +143,29 @@ public class AdicionarVagao extends JFrame{
 		this.JCBSubTipo.setEnabled(false);
 		
 		//botão
-		JBExcluir.setVisible(true); 
+		JBExcluir.setEnabled(true);
+		
+		JBNovo.setVisible(false);
 		
 		//setando o titulo da janela
 		this.setTitle("Alterar Vagão");
 	}
 	
+	
+	/**construtor para cadastrar vagao
+	 * 
+	 * @param md
+	 */
 	public AdicionarVagao(VagaoTableModel md) {
 		this(); // ajusta título
 		modelo = md;
 		this.setTitle("Adicionar Vagao");
 	}
 	
-	//metodo para intanciar meus componentes e seta as secoes na janela
+	
+	/**metodo para intanciar meus componentes e seta as secoes na janela
+	 * 
+	 */
 	public AdicionarVagao() {
 		super();
 		
@@ -146,21 +173,24 @@ public class AdicionarVagao extends JFrame{
 		JTComprimento = new JTextField();
 		JTProprietario = new JTextField();
 		
-		//comboBox
+		//populando comboBox 
 		//bitola
 		DCBMbitola = new DefaultComboBoxModel<>(VeiculoFerroviario.Bitola.values());
 		JCBBitola = new JComboBox<>();
 		JCBBitola.setModel(DCBMbitola);
+		JCBBitola.setSelectedItem(null);
 		
 		//subtipo
 		DCBMSubTipo = new DefaultComboBoxModel<>(Vagao.SubTipo.values());
 		JCBSubTipo = new JComboBox<>();
 		JCBSubTipo.setModel(DCBMSubTipo);
+		JCBSubTipo.setSelectedItem(null);
 		
 		//tipo
 		DCBMTipo = new DefaultComboBoxModel<>(Vagao.Tipo.values());
 		JCBTipo = new JComboBox<Vagao.Tipo>();
 		JCBTipo.setModel(DCBMTipo);
+		JCBTipo.setSelectedItem(null);
 		
 		//labels
 		JLTitulo = new JLabel("Cadastrar Vagão");
@@ -198,6 +228,9 @@ public class AdicionarVagao extends JFrame{
 		tela = new FactoryLayout();
 	}
 	
+	/**gera o head da tela, onde ficará o conteudo do titulo
+	 * 
+	 */
 	private void Jhead() {
 		FormLayout layouthead = new FormLayout(
 				"60dlu, pref, pref, 5dlu,pref ", // colunas
@@ -216,7 +249,9 @@ public class AdicionarVagao extends JFrame{
 		Jhead.add(JLlocomotiva,cc.xy(5,2));	
 	}
 
-	//conteudo do formulário
+	/**gera o body da tela, onde ficara o conteudo do formulario
+	 * 
+	 */
 	private void Jbody() {
 		FormLayout layoutbody = new FormLayout(
 				"5dlu, pref, pref, 5dlu, 50dlu, 20dlu, min,pref, 5dlu, 50dlu, 5dlu, min", // colunas
@@ -239,16 +274,19 @@ public class AdicionarVagao extends JFrame{
 		JTComprimento = new JTextField();
 		Jbody.add(JTComprimento, cc.xyw(5,3,6));
 		
-		//Subtipo
-		Jbody.add(JLSubtipo, cc.xy(3, 5));
-		Jbody.add(JCBSubTipo, cc.xy(5,5));
-		
 		//Tipo
-		Jbody.add(JLTipo, cc.xy(3, 8)); 
-		Jbody.add(JCBTipo, cc.xy(5, 8));
+		Jbody.add(JLTipo, cc.xy(3, 5));  
+		Jbody.add(JCBTipo, cc.xy(5, 5));
+		
+		//Subtipo
+		Jbody.add(JLSubtipo, cc.xy(3, 8)); 
+		Jbody.add(JCBSubTipo, cc.xy(5,8));
+		
 	}
 	
-	//botoes do formulario
+	/**gera o footer da tela, onde ficara o conteudo do formulario
+	 * 
+	 */
 	private void Jfooter() {
 		FormLayout layoutfooter = new FormLayout(
 				"5dlu, pref,5dlu, pref, 5dlu,pref, 5dlu,pref, min,pref", // colunas
@@ -281,81 +319,103 @@ public class AdicionarVagao extends JFrame{
 		JBCancelar.addActionListener(jbCancelarActLt);
 	}
 	
-	//ação botão Salvar
+	/**metodo gravar para usar no botao novo e salvar
+	 * 
+	 */
+	public void gravar() {
+		//textField
+		//comprimento
+		double valorComprimento = 0;
+		try {
+			valorComprimento = Double.parseDouble(JTComprimento.getText());
+		}catch(NumberFormatException err ){
+			fLayout.openAlertError(null,"O campo comprimento necessita ser preenchido corretamente!");
+			pode = false;
+			return;
+		}
+		String valorProprietario = JTProprietario.getText();
+		
+		//comboBox
+		VeiculoFerroviario.Bitola valorBitola = (Entidades.VeiculoFerroviario.Bitola) JCBBitola.getSelectedItem();
+		Vagao.SubTipo valorSubtipo = (Entidades.Vagao.SubTipo) JCBSubTipo.getSelectedItem();
+		Vagao.Tipo valorTipo = (Entidades.Vagao.Tipo) JCBTipo.getSelectedItem();
+		
+		if(valorProprietario.isEmpty() || valorProprietario.length() != 6) {
+			fLayout.openAlertError(null,"Preencha a propritário corretamente!");
+			pode = false;
+			return;
+		} else if(JCBBitola.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Bitola","A Bitola necessita ser preenchido corretamente.");
+			pode = false;
+			return;
+		} else if(JCBSubTipo.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Subtipo","O Subtipo necessita ser preenchido corretamente.");
+			pode = false;
+			return;
+		} else if(JCBTipo.getSelectedIndex() == -1) {
+			fLayout.openAlertError("Tipo","O Tipo necessita ser preenchudo corretamente.");
+			pode = false;
+			return;
+		}
+		
+		//acao para caso clique no botao salvar e todos os campos estejam certos
+		//conexao com o banco de dados, salvar no banco de dados e desconectar do banco
+		Factory f = new Factory();
+		Controller c = f.getController();
+		try {
+			Vagao v = f.getVagao(valorBitola, valorTipo, valorSubtipo, valorProprietario.toCharArray(), valorComprimento);
+			c.connect();
+			if(vagao == null){
+				c.create(v);//salvar no banco
+				fLayout.openAlertWarning(null,"Vagão salvo com sucesso!");
+				modelo.addVagao(v);
+				pode = true;
+			}
+			else {
+				c.update(v);
+				fLayout.openAlertWarning(null,"Vagãos alterado com sucesso!");
+				modelo.updateVagao(linha, v);
+				pode = true;
+			}
+		}catch(Exception err){
+			fLayout.openAlertWarning(null,err.getMessage());
+			return;
+		}finally{
+			c.disconnect();//desconectar do banco
+		}
+	}	
+	
+	/**implementação da ação do botão salvar
+	 * 
+	 */
 	ActionListener jbSalvarActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			//textField
-			//comprimento
-			double valorComprimento = 0;
-			try {
-				valorComprimento = Double.parseDouble(JTComprimento.getText());
-			}catch(NumberFormatException err ){
-				fLayout.openAlertError(null,"O campo comprimento necessita ser preenchido corretamente!");
-				return;
-			}
-			String valorProprietario = JTProprietario.getText();
-			
-			//comboBox
-			VeiculoFerroviario.Bitola valorBitola = (Entidades.VeiculoFerroviario.Bitola) JCBBitola.getSelectedItem();
-			Vagao.SubTipo valorSubtipo = (Entidades.Vagao.SubTipo) JCBSubTipo.getSelectedItem();
-			Vagao.Tipo valorTipo = (Entidades.Vagao.Tipo) JCBTipo.getSelectedItem();
-			
-			if(valorProprietario.isEmpty() || valorProprietario.length() != 6) {
-				fLayout.openAlertError(null,"Preencha a propritário corretamente!");
-				return;
-			} else if(JCBBitola.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Bitola","A Bitola necessita ser preenchido corretamente.");
-				return;
-			} else if(JCBSubTipo.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Subtipo","O Subtipo necessita ser preenchido corretamente.");
-				return;
-			} else if(JCBTipo.getSelectedIndex() == -1) {
-				fLayout.openAlertError("Tipo","O Tipo necessita ser preenchudo corretamente.");
-				return;
-			}
-			
-			//acao para caso clique no botao salvar e todos os campos estejam certos
-			//conexao com o banco de dados, salvar no banco de dados e desconectar do banco
-			Factory f = new Factory();
-			Controller c = f.getController();
-			try {
-				Vagao v = f.getVagao(valorBitola, valorTipo, valorSubtipo, valorProprietario.toCharArray(), valorComprimento);
-				c.connect();
-				if(vagao == null){
-					c.create(v);//salvar no banco
-					fLayout.openAlertWarning(null,"Vagão salvo com sucesso!");
-					modelo.addVagao(v);
-				}
-				else {
-					c.update(v);
-					fLayout.openAlertWarning(null,"Vagãos alterado com sucesso!");
-					modelo.updateVagao(linha, v);
-				}
-				
-			}catch(Exception err){
-				fLayout.openAlertWarning(null,err.getMessage());	
-			}finally{
-				c.disconnect();//desconectar do banco
-			}
+			gravar();
 			dispose();
-		}	
-		
+		}				
 	};
 	
-	//ação botao Novo
+	/**implementação da ação do botão novo
+	 * 
+	 */
 	ActionListener jbNovoActLt = new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
-				JTComprimento.setText("");
-				if(vagao == null){
-					JTProprietario.setText("");
-					JCBBitola.setSelectedItem(null);
-					JCBSubTipo.setSelectedItem(null);
-					JCBTipo.setSelectedItem(null);
-				}
+			  gravar();
+			  if(pode) {
+				  JTComprimento.setText("");
+					if(linha == -1){
+						JTProprietario.setText("");
+						JCBBitola.setSelectedItem(null);
+						JCBSubTipo.setSelectedItem(null);
+						JCBTipo.setSelectedItem(null);
+					}  
+			  }
 		}
 	};
 	
-	//ação botão excluir
+	/**implementação da ação do botão excluir
+	 * 
+	 */
 	ActionListener jbExCluirActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Factory f = new Factory();
@@ -378,16 +438,12 @@ public class AdicionarVagao extends JFrame{
 		}
 	};
 	
-	//ação botão Cancelar
+	/**implementação da ação do botão cancelar
+	 * 
+	 */
 	ActionListener jbCancelarActLt = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			dispose();
 		}
 	}; 
-	
-	public JPanel GetPanel() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
 }

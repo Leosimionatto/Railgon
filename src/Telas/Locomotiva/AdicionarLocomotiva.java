@@ -20,34 +20,48 @@ import Telas.Comum.PosicaoTela;
 
 /** Classe responsável por criar uma janela para realizar a manutenção de uma locomotiva
  * 
- * @author Traldi
+ * @author RailgonTeam
  *
  */
 public class AdicionarLocomotiva extends JFrame{
-
+	
+	/** Centraliza a posição da tela
+	 * 
+	 */
 	private PosicaoTela pTela;
 	
-	//declarações necessárias para atualizar a tabela
+	/** declarações necessárias para atualizar a tabela
+	 * 
+	 */
 	private LocomotivaTableModel modelo;
 	private Locomotiva locomotiva = null;
 	private int linha;
 	
-	//declarando botões
+	/** declarando botões
+	 * 
+	 */
 	private JButton JBExcluir;
 	private JButton JBSalvar;
 	private JButton JBNovo;
 	private JButton JBCancelar;
+	/** declarando campos de texto
+	 * 
+	 */
 	
-	//declarando campos de texto
 	private JTextField JTcampoClasse;
 	private JTextField JTcampoDescricao;
 	private JTextField JTcampoPesomaxreb;
 	private JTextField JTcampoComploc;
-	
+	 
+	/** declarando combobox
+	 * 
+	 */
 	private JComboBox<VeiculoFerroviario.Bitola> JCBbitola;
 	private DefaultComboBoxModel<VeiculoFerroviario.Bitola> DCBMbitola;
 	
-	//declarando nome do campo
+	/** declarando nome do campo
+	 * 
+	 */
 	private JLabel JLClasse;
 	private JLabel JLDescricao;
 	private JLabel JLPesomaxreb;
@@ -56,15 +70,22 @@ public class AdicionarLocomotiva extends JFrame{
 	private JLabel JLimg;
 	private JLabel JLlocomotiva;
 	
-	//declarando seÃ§Ãµes da pagina
+	/** declarando seções da pagina
+	 * 
+	 */
 	JPanel Jhead;
 	JPanel Jbody;
 	JPanel Jfooter;
 	
-	//declarando factory para chamada de telas.
+	/** declarando factory para chamada de telas.
+	 * 
+	 */
 	private FactoryLayout fLayout = new FactoryLayout();
 	//JPanel Jprincipal;
 	
+	/** construtor read only para visualização na tela de adicionar composição
+	 * 
+	 */
 	public AdicionarLocomotiva(Locomotiva l) {
 		this();
 		locomotiva = l;
@@ -85,8 +106,9 @@ public class AdicionarLocomotiva extends JFrame{
 		this.setTitle(l.getDescricao());
 	}
 	
-	//em caso tenha locomotiva adicionada, o botÃ£o Excluir irÃ¡ aparecer na tela
-	//Setando campos da locomotiva para caso haja adicionado, irÃ¡ poder excluir.
+	/** Em caso tenha locomotiva adicionada, o botão Excluir irá aparecer na tela, Setando campos da locomotiva para caso haja adicionado, irá poder excluir.
+	 * 
+	 */
 	public AdicionarLocomotiva(LocomotivaTableModel md, int linhaSelecionada, Locomotiva l) {
 		this(md);
 		locomotiva = l;
@@ -100,13 +122,18 @@ public class AdicionarLocomotiva extends JFrame{
 		this.setTitle("Alterar Locomotiva");
 	}
 	
-	//metodo que instancia todos campos, botÃµes e chama as seÃ§Ãµes da pagina
+	/** colocando titulo na janela
+	 * 	
+	 */
 	public  AdicionarLocomotiva(LocomotivaTableModel md) {
 		this(); // ajusta título
 		modelo = md;
 		this.setTitle("Adicionar Locomotiva");
 	}
-	
+
+	/** metodo que instancia todos campos, botões e chama as seções da pagina
+	 * 
+	 */
 	public  AdicionarLocomotiva() {
 		super();
 		JTcampoClasse = new JTextField();
@@ -127,10 +154,12 @@ public class AdicionarLocomotiva extends JFrame{
 		JBSalvar = new JButton("Salvar");
 		JBNovo = new JButton("Novo");
 		JBCancelar = new JButton("Cancelar");
-		
+	
 		DCBMbitola = new DefaultComboBoxModel<>(VeiculoFerroviario.Bitola.values());
 		JCBbitola = new JComboBox<>();
 		JCBbitola.setModel(DCBMbitola);
+		JCBbitola.setSelectedItem(null);
+		
 		
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		
@@ -143,6 +172,9 @@ public class AdicionarLocomotiva extends JFrame{
 		cp.add(Jbody, BorderLayout.CENTER);
 		cp.add(Jfooter, BorderLayout.SOUTH);
 		
+		/** Centraliza a tela
+		 * 
+		 */
 		cp.setSize(cp.getMinimumSize().width, cp.getMinimumSize().height);
 		pTela = new PosicaoTela();
 		setLocation(pTela.Width(cp.getWidth()), pTela.Height(cp.getHeight()));
@@ -150,12 +182,13 @@ public class AdicionarLocomotiva extends JFrame{
 		
 		pack();
 	}
-	
+	/** seção head da pagina onde fica o titulo e a imagem para a tela locomotiva
+	 * 
+	 */
 	private void Jhead(){
 		FormLayout layouthead = new FormLayout(
 				"60dlu, pref, pref, 5dlu,pref ", // colunas
 				"5dlu, pref, 5dlu"); // linha
-		//layouthead.setRowGroups(new int[][] { { 7, 1, 5 } });
 		Jhead = new JPanel(layouthead);
 		Jhead.setBorder(new TitledBorder(" "));
 		CellConstraints cc = new CellConstraints();
@@ -169,12 +202,13 @@ public class AdicionarLocomotiva extends JFrame{
 		JLlocomotiva.setFont(Font1);
 		Jhead.add(JLlocomotiva,cc.xy(5,2));	
 	}
-	//seção body da pagina onde contém todos os campos da locomotiva//
+	/** seção body da pagina onde contém todos os campos da locomotiva
+	 * 
+	 */
 	private void Jbody() {
 		FormLayout layoutbody = new FormLayout(
 				"5dlu, pref, pref, 5dlu, 50dlu, 20dlu, min,pref, 5dlu, 50dlu, 5dlu, min", // colunas
 				"pref, 3dlu, pref, 3dlu, pref, pref, 3dlu, pref, 3dlu, pref"); // linha
-		//layoutbody.setRowGroups(new int[][] { { 1, 3, 5 } });
 		Jbody = new JPanel(layoutbody);
 		Jbody.setBorder(new TitledBorder(" "));
 		CellConstraints cc = new CellConstraints();
@@ -190,12 +224,13 @@ public class AdicionarLocomotiva extends JFrame{
 		Jbody.add(JLComploc, cc.xy(3,8));
 		Jbody.add(JTcampoComploc, cc.xy(5,8));
 	}
-	//Seção footer, onde contém os botões da aplicação//
+	/** Seção footer, onde contém os botões da aplicação
+	 * 
+	 */
 	private void Jfooter() {
 		FormLayout layoutfooter = new FormLayout(
 				"5dlu, pref,5dlu, pref, 5dlu,pref, 5dlu,pref, min,pref", // colunas
 				"pref, 5dlu, pref, 5dlu, pref"); // linha
-		//layoutbody.setRowGroups(new int[][] { { 1, 3, 5 } });
 		Jfooter = new JPanel(layoutfooter);
 		Jfooter.setBorder(new TitledBorder(" "));
 		CellConstraints cc = new CellConstraints();
@@ -214,14 +249,18 @@ public class AdicionarLocomotiva extends JFrame{
 		JBNovo.addActionListener(Novo1);
 	}
 	
-	//Ação para o botão Cancelar//
+	/** Ação para o botão Cancelar
+	 * 
+	 */
 		ActionListener Cancelar1 = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
 			}
 		};
 	
-	//Ação para o botão excluir 
+	/** Ação para o botão excluir 
+	 * 
+	 */
 	ActionListener Excluir1 = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			Factory f = new Factory();
@@ -244,27 +283,35 @@ public class AdicionarLocomotiva extends JFrame{
 			}
 		}
 	};
-	//Ação para o botão salvar
+	/**Ação para o botão salvar
+	 * 
+	 */
 	ActionListener Salvar1 = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			int classe = 0;
 			double pesomaxreb = 0;
 			double comploc = 0;
-			//tratamento de erro de campo vazio e  preenchimento do usuario no campo classe
+			/**tratamento de erro de campo vazio e  preenchimento do usuario no campo classe
+			 * 
+			 */
 			try {
 				classe  = Integer.parseInt(JTcampoClasse.getText().trim());
 			}catch(NumberFormatException err ){
 				JOptionPane.showMessageDialog(null,"O campo classe necessita ser preenchido corretamente!");
 					return;
 			}
-			//tratamento de erro de campo vazio e preenchimento do usuario no campo peso maximo rebocavel
+			/**tratamento de erro de campo vazio e preenchimento do usuario no campo peso maximo rebocavel
+			 * 
+			 */
 			try {
 				pesomaxreb = Double.parseDouble(JTcampoPesomaxreb.getText());
 			}catch(NumberFormatException err ){
 				JOptionPane.showMessageDialog(null,"O campo peso necessita ser preenchido corretamente!");
 					return;
 			}
-			//tratamento de erro de campo vazio e preenchimento do usuario no campo comprimento da locomotiva
+			/**tratamento de erro de campo vazio e preenchimento do usuario no campo comprimento da locomotiva
+			 * 
+			 */
 			try {
 				 comploc = Double.parseDouble(JTcampoComploc.getText());
 			}catch(NumberFormatException err ){
@@ -273,17 +320,22 @@ public class AdicionarLocomotiva extends JFrame{
 			}
 			VeiculoFerroviario.Bitola bitola = (Entidades.VeiculoFerroviario.Bitola) JCBbitola.getSelectedItem();
 			String descricao = JTcampoDescricao.getText();;
-			//excecao para caso o campo esteja vazio
+			/** exceção para caso o campo Descrição esteja vazio
+			 * 
+			 */
 			if(descricao.isEmpty()) {
 				JOptionPane.showMessageDialog(null,"Preencha a Descrição, a locomotiva nÃ£o pode ser salva sem preencher!");
 					return;
-			//exceÃ§Ã£o para caso o campo esteja vazio
+			/** exceção para caso o campo esteja vazio
+			 * 
+			 */
 			}else if( JCBbitola.getSelectedIndex() == -1) {
 				fLayout.openAlertWarning("Bitola","Bitola necessita ser preenchido corretamente!");
 				return;
 			}
-			//acao para caso clique no botao salvar e todos os campos estejam certos
-			//conexao com o banco de dados, salvar no banco de dados e desconectar do banco
+			/** acão para caso clique no botao salvar e todos os campos estejam certos ,conexão com o banco de dados, salvar no banco de dados e desconectar do banco
+			 * 
+			 */
 			Factory f = new Factory();
 			Controller c = f.getController();
 			try {
@@ -311,24 +363,16 @@ public class AdicionarLocomotiva extends JFrame{
 		}	
 		
 	};
-	//aÃ§Ã£o para o botÃ£o novo, limpa os campos
+	/**ação para o botão novo, limpa os campos
+	 * 
+	 */
 	ActionListener Novo1 = new ActionListener() {
 		  public void actionPerformed(ActionEvent e) {
 			  	JTcampoClasse.setText(" ");
 			  	JTcampoDescricao.setText(" ");
 			  	JTcampoPesomaxreb.setText(" ");
-				JCBbitola.getSelectedItem();
+				JCBbitola.setSelectedItem(null);
 				JTcampoComploc.setText(" ");
 		}
 	};
 }
-
-/*private void excecao() {
-	try {
-		campoClasse = new JFormattedTextField(new MaskFormatter("000000000"));
-		campoPesomaxreb = new JFormattedTextField(new MaskFormatter("000,00 Tonelada(s)"));
-		campoBitola = new JFormattedTextField(new MaskFormatter("0,00 Metros"));
-		campoComploc = new JFormattedTextField(new MaskFormatter("000,00 Metros"));
-	} catch(ParseException e) {
-		System.out.println("verifique os formatos dos campos!");
-	}*/

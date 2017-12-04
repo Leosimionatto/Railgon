@@ -81,6 +81,7 @@ public class AdicionarComposicao extends JFrame{
 		
 		JTFnome.setText(c.getDescricao());
 		JTFcodigo.setText(String.valueOf(c.getCodigo()));
+		JBexcluir.setEnabled(true);
 		
 		for(int i=0; i < compos.getLocomotivas().size(); i++){
 			DLMauxiliar.addElement(compos.getLocomotivas().get(i));
@@ -428,42 +429,52 @@ public class AdicionarComposicao extends JFrame{
 				return;
 			}
 			
+			
 			//posicao do vagao na lista e o próprio vagão
-			int pos = JLdisponiveis.getSelectedIndex();
 			VeiculoFerroviario vf = JLdisponiveis.getSelectedValue();
 			Locomotiva l=null;
 			Vagao v=null;
+			int pos = JLdisponiveis.getSelectedIndex();
 			int posLista = DLMauxiliar.size();
+			int posListaAux =-1;
 			
 			//descobre qual o tipo do elemento escolhido
 			if(vf instanceof Locomotiva){
-				l = (Locomotiva) vf;
-				compos.add(l);				
+				l = (Locomotiva) vf;				
 			}else{
 				v = (Vagao) vf;
+			}
+			
+			//adiciona o elemento na lista de elementos da composição
+			for(int i=DLMauxiliar.size()-1; i >= 0; i--){
+				VeiculoFerroviario aux = DLMauxiliar.getElementAt(i); 
+				if(aux instanceof Vagao){
+					Vagao vAux = (Vagao) aux;
+					if(vAux.getTipo() == v.getTipo() &
+					   vAux.getSubTipo() == v.getSubTipo()){
+						posLista = i+1;
+						break;
+					}else if(vAux.getTipo() == v.getTipo()){
+						if(posListaAux == -1){
+							posLista = i+1;
+							posListaAux=0;
+						}
+					}
+				}
+			}
+			
+			if(vf instanceof Locomotiva){
+				l.setOrdemComposicao(posLista+1);
+				compos.add(l);				
+			}else{
+				v.setOrdemComposicao(posLista+1);
 				compos.add(v);
 			}
 			
 			//tira o elemento da lista
-			DLMdisponiveis.remove(pos);
+			DLMdisponiveis.remove(pos);			
 			
-			//adiciona o elemento na lista de elementos da composição
-			
-			for(int i=0; i < DLMauxiliar.size(); i++ ){
-				VeiculoFerroviario aux = DLMauxiliar.getElementAt(i); 
-				if(aux instanceof Vagao){
-					Vagao vAux = (Vagao) aux;
-					if(vAux.getSubTipo() == v.getSubTipo()){
-						posLista = i+1;
-						break;
-					}else if(vAux.getTipo() == v.getTipo()){
-						posLista = i+1;
-						break;
-					}
-				}
-			}
 			DLMauxiliar.add(posLista, vf);
-			//DLMauxiliar.addElement(vf);
 		}
 		catch(Exception e){
 			fLayout.openAlertError("ERRO INESPERADO", e.getMessage());
@@ -529,7 +540,9 @@ public class AdicionarComposicao extends JFrame{
 		if(resp==0){
 			try{
 				control.remove(compos);	
-				modelo.removeComposicao(linha);		
+				modelo.removeComposicao(linha);
+				fLayout.openAlertInfo("CONCLUIDO","A COMPOSIÇÃO FOI EXCLUIDA COM SUCESSO!");
+				dispose();
 			}
 			catch(Exception e){
 				fLayout.openAlertError("ERRO INESPERADO",e.getMessage());
@@ -555,14 +568,16 @@ public class AdicionarComposicao extends JFrame{
 			
 			int retorno = control.update(compos);
 			
-			if(retorno == 1){
+			if(retorno != -1){
 				fLayout.openAlertInfo("SUCESSO", "A COMPOSIÇÃO FOI SALVA COM SUCESSO!");
-			}else if(retorno == 2){
+				compos.setCodigo(retorno);
+				modelo.addComposicao(compos);
+			}else if(retorno == -1){
 				fLayout.openAlertInfo("SUCESSO", "A COMPOSIÇÃO FOI ATUALIZADA COM SUCESSO!");
+				modelo.updateComposicao(linha, compos);
 			}else{
 				fLayout.openAlertError("ERRO INESPERADO", "NEM JESUIS SALVA! :D");
-			}
-			//modelo.addComposicao(compos);
+			}			
 			dispose();
 		}catch(Exception e){
 			fLayout.openAlertError("ERRO AO SALVAR", e.getMessage());
@@ -570,49 +585,89 @@ public class AdicionarComposicao extends JFrame{
 	}
 	
 	private void btnUp(){
-		int pos = JLAuxiliar.getSelectedIndex();
-		
-		if (pos < 0){
-			return;
-		}
-		
-		int posAnt = pos-1;
-		
-		VeiculoFerroviario vf  = DLMauxiliar.get(pos);
-		VeiculoFerroviario aux = DLMauxiliar.get(posAnt);
-		
-		//se esta tentando movimentar um vagão
-		if(vf instanceof Vagao){
-			//se esta tentando movimentar o primeiro elemento
-			if(JLAuxiliar.getSelectedIndex() == 1){
-				fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ser o primeiro de uma composição!");
-				return;
-			}
-			//verifica se o item anterior é uma locomotiva
-			if(aux instanceof Locomotiva){
-				fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ficar entre locomotivas!");
+		if(!JLAuxiliar.isSelectionEmpty()){
+			int pos = JLAuxiliar.getSelectedIndex();
+			
+			if (pos < 0){
 				return;
 			}
 			
-			Vagao v    = (Vagao) vf;
-			Vagao vAnt = (Vagao) aux;
+			int posAnt = pos-1;
 			
-			if(v.getSubTipo() == vAnt.getSubTipo()){
-				DLMauxiliar.set(posAnt, v);
-				DLMauxiliar.set(pos, vAnt);
-				return;
-			}else{
-				if(v.getTipo() == vAnt.getTipo()){
+			VeiculoFerroviario vf  = DLMauxiliar.get(pos);
+			VeiculoFerroviario aux = DLMauxiliar.get(posAnt);
+			
+			//se esta tentando movimentar um vagão
+			if(vf instanceof Vagao){
+				//se esta tentando movimentar o primeiro elemento
+				if(JLAuxiliar.getSelectedIndex() == 1){
+					fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ser o primeiro de uma composição!");
+					return;
+				}
+				//verifica se o item anterior é uma locomotiva
+				if(aux instanceof Locomotiva){
+					fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ficar entre locomotivas!");
+					return;
+				}
+				
+				Vagao v    = (Vagao) vf;
+				Vagao vAnt = (Vagao) aux;
+				
+				if(v.getSubTipo() == vAnt.getSubTipo() &
+				   v.getTipo() == vAnt.getTipo()){
 					DLMauxiliar.set(posAnt, v);
 					DLMauxiliar.set(pos, vAnt);
 					return;
 				}
+			}else{
+				Locomotiva l    = (Locomotiva) vf;
+				Locomotiva lAnt = (Locomotiva) aux;
+				
+				DLMauxiliar.set(posAnt, l);
+				DLMauxiliar.set(pos, lAnt);
 			}
 		}
 	}
 
 	private void btnDown(){
-		fLayout.openAlertWarning("aguarde", "Aguardando implementacao");
+		if(!JLAuxiliar.isSelectionEmpty()){
+			int pos = JLAuxiliar.getSelectedIndex();
+			if (pos == DLMauxiliar.size()-1){
+				return;
+			}
+			int posProx = pos+1;
+			VeiculoFerroviario vf  = DLMauxiliar.get(pos);
+			VeiculoFerroviario aux = DLMauxiliar.get(posProx);
+			//se esta tentando movimentar um vagão
+			if(vf instanceof Vagao){
+				//se esta tentando movimentar o primeiro elemento
+				if(JLAuxiliar.getSelectedIndex() == 1){
+					fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ser o primeiro de uma composição!");
+					return;
+				}
+				//verifica se o item anterior é uma locomotiva
+				if(aux instanceof Locomotiva){
+					fLayout.openAlertWarning("AGRUPAMENTO", "O Vagão não pode ficar entre locomotivas!");
+					return;
+				}
+				
+				Vagao v    = (Vagao) vf;
+				Vagao vAnt = (Vagao) aux;
+				
+				if(v.getSubTipo() == vAnt.getSubTipo() &
+				   v.getTipo() == vAnt.getTipo()){
+					DLMauxiliar.set(posProx, v);
+					DLMauxiliar.set(pos, vAnt);
+					return;
+				}
+			}else{
+				Locomotiva l    = (Locomotiva) vf;
+				Locomotiva lAnt = (Locomotiva) aux;
+				
+				DLMauxiliar.set(posProx, l);
+				DLMauxiliar.set(pos, lAnt);
+			}
+		}
 	}
 	
 	//implementação do método Novo
