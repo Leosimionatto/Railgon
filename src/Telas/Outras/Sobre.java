@@ -18,9 +18,7 @@ public class Sobre extends JFrame implements ITelas{
 	private JPanel JPhead;
 	private JPanel JPlogo;
 	private JPanel JPbody;
-	private JPanel JPfooter;
-	
-	
+	private JPanel JPfooter;	
 	
 	public Sobre() {
 		

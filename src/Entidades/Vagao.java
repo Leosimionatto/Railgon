@@ -198,4 +198,17 @@ public class Vagao extends VeiculoFerroviario {
 		Vagao v = (Vagao) vf;
 		return v.getIdentificacao().compareTo(this.identificacao);
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Vagao v = (Vagao) obj;
+		
+		if(this.identificacao.equals(v.getIdentificacao()) &
+		   this.id				== v.getId() &
+		   this.ordemComposicao == v.getOrdemComposicao() &
+		   this.comprimento		== v.getComprimento()){
+			return true;
+		}
+		return false;
+	}
 }

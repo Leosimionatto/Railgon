@@ -113,4 +113,20 @@ public class Locomotiva extends VeiculoFerroviario{
 			return 0;
 		}
 	}
+	
+	@Override
+	public boolean equals(Object obj){
+		Locomotiva l = (Locomotiva) obj;
+		
+		if(this.classe			== l.getClasse()	  &
+		   this.pesoMax			== l.getPesoMax()	  &
+		   this.comprimento		== l.getComprimento() &
+		   this.id 				== l.getId()		  &
+		   this.ordemComposicao == l.getOrdemComposicao() &
+		   this.getBitola() 	== l.getBitola()	  &
+		   this.descricao.equals(l.getDescricao())){
+			return true;
+		}
+		return false;
+	}
 }

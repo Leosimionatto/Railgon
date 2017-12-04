@@ -284,16 +284,17 @@ public class Composicao implements Comparable<Composicao> {
 			if(pesoAux < this.pesoAtual){
 				throw new RuntimeException("A Locomotiva não pode ser removida: O peso dos vagoes ultrapassariam o limite!");
 			}
-		//a locomotiva não existe na composicao
-		}else if(!locomotivas.contains(l)){
-			throw new RuntimeException("A Locomotiva não pertence a Composição");
-		}else{
-			locomotivas.remove(l);
 		}
+		//a locomotiva não existe na composicao
+		if(!locomotivas.contains(l)){
+			throw new RuntimeException("A Locomotiva não pertence a Composição");
+		}
+		
+		locomotivas.remove(l);		
 		
 		if(locomotivas.size() == 0){
 			this.bitola = ' ';
-		}
+		}		
 		
 		this.comprimento-= l.getComprimento();
 		this.pesoMax -= l.getPesoMax();
